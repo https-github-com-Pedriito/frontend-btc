@@ -31,7 +31,6 @@ const Dashboard = () => {
     product.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
   const URL_BASE = import.meta.env.VITE_API_URL;
-  console.Log("surprise:", import.meta.env);
   // Différentes fonctions pour les appels d'API
   // Fonction  catégorie
   // categories
@@ -296,6 +295,7 @@ const Dashboard = () => {
     fetchData(`${URL_BASE}/categories`, setCategories);
     fetchData(`${URL_BASE}/sub-categories`, setSubCategories);
     fetchData(`${URL_BASE}/products`, setProducts);
+    console.log(import.meta.env);
   }, []);
 
   const renderCategories = () => (
@@ -851,7 +851,7 @@ const Dashboard = () => {
           />
           <button
             onClick={() => {
-              if (password === import.meta.env.VITE_REACT_APP_DASHBOARD_PASSWORD) {
+              if (password === "admin") {
                 setIsLoggedIn(true);
                 setError(""); // Réinitialiser l'erreur
               } else {
