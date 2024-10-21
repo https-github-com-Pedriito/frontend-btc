@@ -1,0 +1,72 @@
+import Image from "next/image"
+import { Button } from "@/components/ui/button"
+
+export default function Component() {
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+        <div className="w-full md:w-1/4">
+          <Image
+            src="/placeholder.svg?height=300&width=300"
+            alt="Image de gauche"
+            width={300}
+            height={300}
+            className="rounded-lg object-cover"
+          />
+        </div>
+        <div className="w-full md:w-1/2 text-center">
+          <h2 className="text-2xl font-bold mb-4">Titre de la section</h2>
+          <p className="text-muted-foreground mb-6">
+            Voici un texte d'exemple qui se trouve entre les deux images. Vous pouvez remplacer ce texte par le contenu de votre choix. Il peut s'agir d'une description, d'une explication ou de toute autre information pertinente pour votre page.
+          </p>
+          <Button>Cliquez ici</Button>
+        </div>
+        <div className="w-full md:w-1/4">
+          <Image
+            src="/placeholder.svg?height=300&width=300"
+            alt="Image de droite"
+            width={300}
+            height={300}
+            className="rounded-lg object-cover"
+          />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+
+
+<a href="#_" class="relative inline-flex items-center justify-start px-6 py-3 overflow-hidden font-medium transition-all bg-white rounded hover:bg-white group">
+<span class="w-48 h-48 rounded rotate-[-40deg] bg-purple-600 absolute bottom-0 left-0 -translate-x-full ease-out duration-500 transition-all translate-y-full mb-9 ml-9 group-hover:ml-0 group-hover:mb-32 group-hover:translate-x-0"></span>
+<span class="relative w-full text-left text-black transition-colors duration-300 ease-in-out group-hover:text-white">Button Text</span>
+</a>
+
+
+<a href="#_" class="relative inline-block text-lg group">
+<span class="relative z-10 block px-5 py-3 overflow-hidden font-medium leading-tight text-gray-800 transition-colors duration-300 ease-out border-2 border-gray-900 rounded-lg group-hover:text-white">
+<span class="absolute inset-0 w-full h-full px-5 py-3 rounded-lg bg-gray-50"></span>
+<span class="absolute left-0 w-48 h-48 -ml-2 transition-all duration-300 origin-top-right -rotate-90 -translate-x-full translate-y-12 bg-gray-900 group-hover:-rotate-180 ease"></span>
+<span class="relative">Button Text</span>
+</span>
+<span class="absolute bottom-0 right-0 w-full h-12 -mb-1 -mr-1 transition-all duration-200 ease-linear bg-gray-900 rounded-lg group-hover:mb-0 group-hover:mr-0" data-rounded="rounded-lg"></span>
+</a>
+
+
+<header className="w-screen bg-transparent">
+        {" "}
+        {/* Enlève tout fond pour vérifier l'espace */}
+        <Navbar />
+      </header>
+      <main className="m-0 p-0">
+        {" "}
+        {/* Enlève les marges et le padding par défaut */}
+        {/* Section About avec un dégradé de vert, occupant toute la largeur */}
+        <section className="w-screen bg-black">
+          <About />
+        </section>
+        {/* Section Menu avec un arrière-plan noir, occupant toute la largeur */}
+        <section className="w-screen bg-white text-white ">
+          <Menu />
+        </section>
+      </main>
