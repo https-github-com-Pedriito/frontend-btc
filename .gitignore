@@ -1,0 +1,6 @@
+# Ignorer les fichiers de log spécifiques
+.embold/vscode-logs.log
+
+# Ignorer tous les fichiers .env
+.env
+*.env
