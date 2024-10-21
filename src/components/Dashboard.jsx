@@ -31,7 +31,7 @@ const Dashboard = () => {
     product.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
   const URL_BASE = import.meta.env.VITE_API_URL;
-  console.Log("surprise:", URL_BASE)
+  console.Log("surprise:", import.meta.env);
   // Différentes fonctions pour les appels d'API
   // Fonction  catégorie
   // categories
