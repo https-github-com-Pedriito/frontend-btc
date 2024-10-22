@@ -295,7 +295,6 @@ const Dashboard = () => {
     fetchData(`${URL_BASE}/categories`, setCategories);
     fetchData(`${URL_BASE}/sub-categories`, setSubCategories);
     fetchData(`${URL_BASE}/products`, setProducts);
-    console.log(import.meta.env);
   }, []);
 
   const renderCategories = () => (
@@ -851,7 +850,7 @@ const Dashboard = () => {
           />
           <button
             onClick={() => {
-              if (password === "admin") {
+              if (password === import.meta.env.VITE_REACT_APP_DASHBOARD_PASSWORD) {
                 setIsLoggedIn(true);
                 setError(""); // Réinitialiser l'erreur
               } else {
