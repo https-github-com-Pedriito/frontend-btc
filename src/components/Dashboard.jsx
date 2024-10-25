@@ -30,6 +30,10 @@ const Dashboard = () => {
   const filteredProducts = products.filter((product) =>
     product.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+  const filtered_sub = subCategories.filter((sub_categories) =>
+    sub_categories.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   const URL_BASE = import.meta.env.VITE_API_URL;
   // Différentes fonctions pour les appels d'API
   // Fonction  catégorie
@@ -94,12 +98,9 @@ const Dashboard = () => {
 
   const deleteSubCategory = async (id) => {
     try {
-      const response = await fetch(
-        `${URL_BASE}/sub-categories/${id}`,
-        {
-          method: "DELETE",
-        }
-      );
+      const response = await fetch(`${URL_BASE}/sub-categories/${id}`, {
+        method: "DELETE",
+      });
 
       if (!response.ok)
         throw new Error("Erreur lors de la suppression de la sous-catégorie");
@@ -340,10 +341,7 @@ const Dashboard = () => {
                           cat.id === category.id ? updatedCategory : cat
                         )
                       );
-                      fetchData(
-                        `${URL_BASE}/categories`,
-                        setCategories
-                      );
+                      fetchData(`${URL_BASE}/categories`, setCategories);
                       setCategoryInput(""); // Réinitialise le champ de saisie
                     });
                   }}
@@ -395,6 +393,30 @@ const Dashboard = () => {
       <h2 className="text-xl sm:text-2xl font-semibold mb-4 text-white">
         Sous-Catégories
       </h2>
+      <div className="flex items-center w-full max-w-full space-x-2 rounded-lg border border-gray-300 bg-gray-50 dark:bg-gray-900 px-3.5 py-2 mt-5 mb-12">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth={1.5}
+          stroke="green"
+          className="size-6"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+          />
+        </svg>
+
+        <Input
+          type="search"
+          placeholder="Rechercher une sous-catégorie ..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full border-0 h-8 font-semibold text-green-800 placeholder:text-green-800"
+        />
+      </div>
 
       <input
         type="text"
@@ -425,7 +447,7 @@ const Dashboard = () => {
       </button>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        {subCategories.map((subCategory) => {
+        {filtered_sub.map((subCategory) => {
           const associatedCategory = categories.find(
             (category) => category.id === subCategory.categoryId
           );
@@ -850,7 +872,9 @@ const Dashboard = () => {
           />
           <button
             onClick={() => {
-              if (password === import.meta.env.VITE_REACT_APP_DASHBOARD_PASSWORD) {
+              if (
+                password === import.meta.env.VITE_REACT_APP_DASHBOARD_PASSWORD
+              ) {
                 setIsLoggedIn(true);
                 setError(""); // Réinitialiser l'erreur
               } else {

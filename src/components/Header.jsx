@@ -48,7 +48,7 @@ const Header = () => {
           <div className="mt-8">
             <RouterLink
               to="/"
-              className="transition-all cursor-pointer bg-green-700 text-white shadow-neumorphic shadow-gray active:shadow-neumorphicInset rounded-full px-8 py-4"
+              className="transition-all cursor-pointer bg-green-700 text-white shadow-neumorphic shadow-gray active:shadow-neumorphicInset rounded-lg px-8 py-4"
               onClick={toggleMenu}
             >
              Retour à l&apos;accueil
