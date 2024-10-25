@@ -1,17 +1,22 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect,useRef } from "react";
 import PropTypes from "prop-types";
 import { fetchCategories, fetchProducts, fetchSubCategories } from "../api";
 
 // Composant Card pour afficher une seule carte
-const Card = ({ imageSrc, title, price }) => {
+const Card = ({ imageSrc, title, price, description, onClick }) => {
   return (
-    <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+    <div
+      onClick={onClick}
+      className="bg-white rounded-lg shadow-lg overflow-hidden cursor-pointer"
+    >
       <img src={imageSrc} alt={title} className="w-full h-48 object-cover" />
       <div className="p-4">
         <h3 className="text-lg font-semibold text-gray-800">{title}</h3>
         <p className="text-gray-600 mt-2">
           {price !== null ? `${price} €` : "Prix non disponible"}
         </p>
+        {/* Ajout de description en tant que prop */}
+        <p className="hidden">{description}</p>
       </div>
     </div>
   );
@@ -20,7 +25,77 @@ const Card = ({ imageSrc, title, price }) => {
 Card.propTypes = {
   imageSrc: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
-  price: PropTypes.string.isRequired,
+  price: PropTypes.number.isRequired,
+  description: PropTypes.string.isRequired,
+  onClick: PropTypes.func.isRequired,
+};
+
+// Composant Popup pour afficher les détails du produit
+const ProductPopup = ({ product, onClose, onAddToCart }) => {
+  const popupRef = useRef(null);
+
+  // Détecte le clic à l'extérieur de la popup
+  const handleClickOutside = (event) => {
+    if (popupRef.current && !popupRef.current.contains(event.target)) {
+      onClose();
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  if (!product) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div ref={popupRef} className="bg-white rounded-lg shadow-lg w-11/12 max-w-md p-6">
+        <button
+          onClick={onClose}
+          className="text-red-500 text-sm font-bold mb-4"
+        >
+          Fermer
+        </button>
+        <img
+          src={product.imageSrc}
+          alt={product.title}
+          className="w-full h-48 object-cover rounded-lg mb-4"
+        />
+        <h2 className="text-2xl font-bold text-gray-800">{product.title}</h2>
+        <p className="text-lg text-gray-600 mt-2">{product.price} €</p>
+        <p className="text-gray-700 mt-4">{product.description}</p>
+        <div className="mt-4">
+          {product.options && product.options.length > 0 && (
+            <div>
+              <h3 className="text-md font-semibold text-gray-800">
+                Options :
+              </h3>
+              <div className="grid px-2 py-2 rounded-lg transition duration-200 max-w-fit bg-green-800">
+                {product.options.map((option, index) => (
+                  <p key={index}>{option}</p>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+        <button
+          onClick={() => onAddToCart(product)}
+          className="mt-6 px-4 py-2 bg-green-500 text-white rounded-lg"
+        >
+          Ajouter au panier
+        </button>
+      </div>
+    </div>
+  );
+};
+
+ProductPopup.propTypes = {
+  product: PropTypes.object,
+  onClose: PropTypes.func.isRequired,
+  onAddToCart: PropTypes.func.isRequired,
 };
 
 // Composant Menu qui affiche une grille de cartes avec une barre d'onglets
@@ -29,84 +104,67 @@ const Menu = () => {
   const [menuItems, setMenuItems] = useState([]);
   const [filteredItems, setFilteredItems] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
-  // Fonction pour récupérer les catégories
   const fetchCategoriesData = async () => {
     const data = await fetchCategories();
     setCategories(data);
     if (data.length > 0) {
-      setSelectedCategory(data[0].Name); // Sélectionne la première catégorie par défaut
+      setSelectedCategory(data[0].Name);
     }
   };
 
-  // Fetch categories and subcategories on component mount
   useEffect(() => {
     fetchCategoriesData();
   }, []);
 
-  // Fetch products and subcategories on component mount
   useEffect(() => {
     const fetchMenuItems = async () => {
       try {
         const products = await fetchProducts();
         const subCategories = await fetchSubCategories();
         const categories = await fetchCategories();
-    
-        // Création d'un mapping de categoryId à category Name
+
         const categoryMap = Object.fromEntries(
           categories.map((category) => [category.id, category.Name])
         );
-        
-        // Mettre à jour les items du menu après la récupération
+
         const allMenuItems = products.map((product) => {
-          // Trouver la sous-catégorie en utilisant le nom
           let subCategory = null;
           for (const sub of subCategories) {
             if (sub.name === product.subCategoryId) {
               subCategory = sub;
-              break; // Sortir de la boucle une fois trouvé
+              break;
             }
           }
-    
-          const menuItem = {
+
+          return {
             title: product.name,
             price: product.price,
             imageSrc: product.imageUrl || "default_image_url.jpg",
-            category: subCategory
-              ? categoryMap[subCategory.categoryId]
-              : "Non Défini", // Vérifiez si categoryId est bien récupéré
+            category: subCategory ? categoryMap[subCategory.categoryId] : "Non Défini",
             subCategory: subCategory ? subCategory.name : "Non Défini",
+            description: product.Description, // Correction ici
+            options: product.options || [],
           };
-    
-          return menuItem;
         });
-    
-        // Mettez à jour l'état menuItems
-        setMenuItems(allMenuItems); // Ajout de cette ligne
+
+        setMenuItems(allMenuItems);
       } catch (error) {
-        console.error(
-          "Erreur lors de la récupération des items de menu :",
-          error
-        );
+        console.error("Erreur lors de la récupération des items de menu :", error);
       }
     };
 
     fetchMenuItems();
   }, [selectedCategory]);
 
-  // Met à jour les éléments filtrés lorsque la catégorie sélectionnée change
   useEffect(() => {
     const newFilteredItems = menuItems.filter(
       (item) => item.category === selectedCategory
     );
     setFilteredItems(newFilteredItems);
-  
-    // Ajout du console.log ici pour afficher le nombre d'objets et leurs noms
-    console.log(`Nombre d'objets à afficher : ${newFilteredItems.length}`);
-    console.log("Objets filtrés :", newFilteredItems); // Ajout d'un log pour voir les éléments filtrés
   }, [selectedCategory, menuItems]);
 
-  // Groupement des éléments par sous-catégorie
   const groupedItems = filteredItems.reduce((acc, item) => {
     if (!acc[item.subCategory]) {
       acc[item.subCategory] = [];
@@ -115,16 +173,17 @@ const Menu = () => {
     return acc;
   }, {});
 
+  const handleAddToCart = (product) => {
+    console.log("Produit ajouté au panier :", product);
+  };
+
   return (
     <div className="p-8 bg-black">
-      {/* Barre d'onglets */}
       <div className="flex justify-start space-x-2 p-4 bg-gray-200 gap-20 px-8 rounded-full shadow-lg mb-12 bg-opacity-40 overflow-x-auto whitespace-nowrap">
         {categories.map((category) => (
           <button
             key={category.id}
-            onClick={() => {
-              setSelectedCategory(category.Name); // Met à jour la catégorie sélectionnée
-            }}
+            onClick={() => setSelectedCategory(category.Name)}
             className={`px-8 py-5 rounded-full shadow-lg ${
               selectedCategory === category.Name
                 ? "bg-green-500 text-white uppercase"
@@ -136,7 +195,6 @@ const Menu = () => {
         ))}
       </div>
 
-      {/* Grille de cartes */}
       <div className="p-4 space-y-8">
         {Object.keys(groupedItems).map((subCategory) => (
           <div key={subCategory}>
@@ -152,12 +210,21 @@ const Menu = () => {
                   imageSrc={item.imageSrc}
                   title={item.title}
                   price={item.price}
+                  description={item.description} // Correction ici
+                  onClick={() => setSelectedProduct(item)}
                 />
               ))}
             </div>
           </div>
         ))}
       </div>
+      {selectedProduct && (
+        <ProductPopup
+          product={selectedProduct}
+          onClose={() => setSelectedProduct(null)}
+          onAddToCart={handleAddToCart}
+        />
+      )}
     </div>
   );
 };

@@ -26,6 +26,7 @@ const Dashboard = () => {
   const [error, setError] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [setIsEditing] = useState(false);
+  const [isEditing] = useState("");
   const [productIdToEdit, setProductIdToEdit] = useState(null);
   const filteredProducts = products.filter((product) =>
     product.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -256,6 +257,7 @@ const Dashboard = () => {
         imageUrl: productInput.image, // Utilisation de "imageUrl"
         options: productInput.options,
       });
+      console.log("body", body);
       await fetch(`${URL_BASE}/products/${productIdToEdit}`, {
         method: "PATCH",
         headers: {
@@ -573,6 +575,14 @@ const Dashboard = () => {
       </div>
     </section>
   );
+  const handleToggleOption = (option) => {
+    setProductInput((prevState) => {
+      const updatedOptions = prevState.options.includes(option)
+        ? prevState.options.filter((item) => item !== option) // supprime si déjà sélectionné
+        : [...prevState.options, option]; // ajoute si non sélectionné
+      return { ...prevState, options: updatedOptions };
+    });
+  };
 
   const renderProducts = () => (
     <section className="products">
@@ -660,22 +670,31 @@ const Dashboard = () => {
         className="text-green-800 bg-white p-3 rounded-lg mb-4 w-full  placeholder:text-green-800 focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-200"
       />
 
-      <select
-        value={productInput.options}
-        onChange={(e) =>
-          setProductInput({ ...productInput, options: e.target.value })
-        }
-        className="text-green-800 bg-white p-3 rounded-lg mb-4 w-full focus:outline-none h-12 focus:ring-2 focus:ring-green-500 transition duration-200"
-      >
-        <option value="">Sélectionnez une option</option>
-        <option value="avec oeufs">Avec oeufs</option>
-        <option value="sans oeufs">Sans oeufs</option>
-        <option value="1 oeuf">1 oeuf</option>
-        <option value="2 oeufs">2 oeufs</option>
-        <option value="piment 1">piment niveau 1</option>
-        <option value="piment 2">piment niveau 2</option>
-        <option value="piment 3">piment niveau 3</option>
-      </select>
+      {/* Composant Toggle Token pour les options de produit */}
+      <div className="flex flex-wrap gap-2 mb-4 bg-green-800 p-4 rounded-lg">
+        {[
+          "1 oeuf",
+          "2 oeufs",
+          "piment niveau 1",
+          "piment niveau 2",
+          "piment niveau 3",
+          "piment niveau 4",
+          "piment niveau 5",
+          "piment niveau 6",
+        ].map((option) => (
+          <button
+            key={option}
+            onClick={() => handleToggleOption(option)}
+            className={`px-4 py-2 rounded-lg transition duration-200 ${
+              productInput.options.includes(option)
+                ? "bg-green-500 text-white"
+                : "bg-gray-200 text-gray-800"
+            }`}
+          >
+            {option}
+          </button>
+        ))}
+      </div>
 
       <button
         onClick={addProduct} // Ajout d'un produit
@@ -698,7 +717,7 @@ const Dashboard = () => {
                 setProductInput({ ...productInput, name: e.target.value })
               }
               placeholder="Nom du produit"
-              className="text-green-800 bg-gray-800 p-2 rounded-full mb-2 w-full focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-200"
+              className="text-green-800 bg-white p-2 rounded-lg mb-2 w-full focus:outline-none focus:ring-2 placeholder:text-green-800 focus:ring-green-500 transition duration-200"
             />
 
             <input
@@ -708,7 +727,7 @@ const Dashboard = () => {
                 setProductInput({ ...productInput, price: e.target.value })
               }
               placeholder="Prix du produit"
-              className="placeholder:text-green-800 bg-gray-800 p-2 rounded-full mb-2 w-full  focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-200"
+              className="placeholder:text-green-800 bg-white p-2 rounded-lg mb-2 w-full text-green-800 focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-200"
             />
 
             <input
@@ -721,7 +740,7 @@ const Dashboard = () => {
                 })
               }
               placeholder="Description du produit"
-              className="placeholder:text-green-800 bg-gray-800 p-2 rounded-full mb-2 w-full focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-200"
+              className="placeholder:text-green-800 bg-white p-2 rounded-lg mb-2 w-full text-green-800 focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-200"
             />
 
             <select
@@ -732,7 +751,7 @@ const Dashboard = () => {
                   subCategory: e.target.value,
                 })
               }
-              className="placeholder:text-green-800 bg-gray-800 p-2 rounded-full mb-2 w-full h-12 focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-200"
+              className="text-green-800 bg-white p-2 rounded-lg mb-2 w-full h-12 focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-200"
             >
               <option value="">Sélectionnez une sous-catégorie</option>
               {subCategories.map((subCategory) => (
@@ -749,31 +768,53 @@ const Dashboard = () => {
                 setProductInput({ ...productInput, image: e.target.value })
               }
               placeholder="URL de l'image du produit"
-              className=" bg-white p-2 rounded-full mb-2 w-full focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-200"
+              className=" bg-white p-2 rounded-lg mb-2 placeholder:text-green-800 w-full focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-200"
             />
 
-            <select
-              value={productInput.options}
-              onChange={(e) =>
-                setProductInput({ ...productInput, options: e.target.value })
-              }
-              className=" bg-white p-2 rounded-full mb-2 w-full focus:outline-none h--12 focus:ring-2 focus:ring-green-500 transition duration-200"
-            >
-              <option value="">Sélectionnez une option</option>
-              <option value="avec oeufs">Avec oeufs</option>
-              <option value="sans oeufs">Sans oeufs</option>
-              <option value="1 oeuf">1 oeuf</option>
-              <option value="2 oeufs">2 oeufs</option>
-            </select>
+            {/* Composant Toggle Token pour les options de produit */}
+            <div className="flex flex-wrap gap-2 mb-4 bg-green-800 p-4 rounded-lg">
+              {[
+                "1 oeuf",
+                "2 oeufs",
+                "piment niveau 1",
+                "piment niveau 2",
+                "piment niveau 3",
+                "piment niveau 4",
+                "piment niveau 5",
+                "piment niveau 6",
+              ].map((option) => (
+                <button
+                  key={option}
+                  onClick={() => handleToggleOption(option)}
+                  className={`px-4 py-2 rounded-lg transition duration-200 ${
+                    productInput.options.includes(option)
+                      ? "bg-green-500 text-white"
+                      : "bg-gray-200 text-gray-800"
+                  }`}
+                >
+                  {option}
+                </button>
+              ))}
+            </div>
 
             <button
               onClick={() =>
                 updateProduct(productIdToEdit).then(() => {
                   fetchData(`${URL_BASE}/products`, setProducts);
                   setIsModalOpen(false);
+                  setProductInput(
+                    {
+                      name: "",
+                      price: "",
+                      description: "",
+                      subCategory: "",
+                      image: "",
+                      options: "",
+                    } // Réinitialiser les champs
+                  );
                 })
               } // Passer l'ID du produit à mettre à jour
-              className="bg-blue-600 text-white p-3 rounded-full hover:bg-blue-500 transition duration-200"
+              className="bg-blue-600 text-white p-3 rounded-lg mr-8 hover:bg-blue-500 transition duration-200"
             >
               Enregistrer
             </button>
@@ -781,10 +822,9 @@ const Dashboard = () => {
             <button
               onClick={() => {
                 setIsModalOpen(false); // Fermer le modal
-                setIsEditing(false); // Réinitialiser l'état d'édition
                 setProductIdToEdit(null); // Réinitialiser l'ID du produit à éditer
               }}
-              className="bg-red-500 text-white p-3 rounded-full hover:bg-red-400 transition duration-200 mt-2"
+              className="bg-red-500 text-white p-3 rounded-lg  hover:bg-red-400 transition duration-200 mt-2"
             >
               Annuler
             </button>
@@ -809,7 +849,16 @@ const Dashboard = () => {
             </div>
             <div className="flex flex-col mt-4">
               <p className="text-gray-300">{product.description}</p>
-              <p className="text-gray-300">{product.options}</p>
+              <div className="grid grid-cols-2 gap-4 mt-4 mb-4">
+                {product.options?.map((option, index) => (
+                  <button
+                    key={index}
+                    className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 focus:outline-none transition-colors"
+                  >
+                    {option}
+                  </button>
+                ))}
+              </div>
               <p className="text-gray-300">{product.price} €</p>
               <p className="text-gray-300">{product.subCategoryId}</p>
             </div>
