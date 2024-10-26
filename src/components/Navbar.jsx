@@ -59,7 +59,7 @@ const Navbar = () => {
             </RouterLink>
 
             <RouterLink
-              to="/PreOrder"
+              to="/DevPage"
               className="transition-all items-center cursor-pointer bg-red-700 text-white shadow-neumorphic shadow-gray active:shadow-neumorphicInset rounded-full px-8 py-6"
               onClick={toggleMenu}
             >

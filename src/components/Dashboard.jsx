@@ -591,20 +591,20 @@ const Dashboard = () => {
 
   const handleToggleAllergenes = (allergene) => {
     console.log("allergene", allergene);
-    
+
     // Vérifiez si allergene est défini et n'est pas une chaîne vide
     if (allergene === undefined || allergene === "") {
       console.warn("allergene is undefined or empty");
       return; // Sortir de la fonction si allergene est undefined ou vide
     }
-  
+
     setProductInput((prevState) => {
       // Vérifie si prevState existe et si prevState.allergenes est bien un tableau
       const allergenes = prevState?.allergenes ?? [];
       const updatedAllergenes = allergenes.includes(allergene)
         ? allergenes.filter((item) => item !== allergene) // supprime si déjà sélectionné
         : [...allergenes, allergene]; // ajoute si non sélectionné
-  
+
       return { ...prevState, allergenes: updatedAllergenes };
     });
   };
@@ -769,9 +769,9 @@ const Dashboard = () => {
 
         {/* Afficher le modal d'édition si ouvert */}
         {isModalOpen && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-            <div className="bg-gray-700 p-4 rounded-lg shadow-md">
-              <h3 className="text-lg font-semibold text-white mb-2">
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 sm:overflow-y-auto">
+            <div className="bg-gray-700 p-4 rounded-lg shadow-md w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto">
+              <h3 className="text-lg font-semibold text-white mb-2 text-center">
                 Édition du Produit
               </h3>
               <input
@@ -832,10 +832,13 @@ const Dashboard = () => {
                   setProductInput({ ...productInput, image: e.target.value })
                 }
                 placeholder="URL de l'image du produit"
-                className=" bg-white p-2 rounded-lg mb-2 placeholder:text-green-800 w-full focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-200"
+                className="bg-white p-2 rounded-lg mb-2 placeholder:text-green-800 w-full focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-200"
               />
+              <h1 className="mb-4 mt-8 bg-white text-black max-w-lg px-4 py-3 rounded-lg">
+                Options
+              </h1>
               {/* Composant Toggle Token pour les options de produit */}
-              <div className="flex flex-wrap gap-2 mb-4 bg-green-800 p-4 rounded-lg">
+              <div className="flex flex-wrap gap-2 mb-4 bg-green-800 p-2 rounded-lg">
                 {[
                   "1 oeuf",
                   "2 oeufs",
@@ -849,7 +852,7 @@ const Dashboard = () => {
                   <button
                     key={option}
                     onClick={() => handleToggleOption(option)}
-                    className={`px-4 py-2 rounded-lg transition duration-200 ${
+                    className={`px-3 py-1 rounded-lg transition duration-200 ${
                       productInput.options.includes(option)
                         ? "bg-green-500 text-white"
                         : "bg-gray-200 text-gray-800"
@@ -859,9 +862,12 @@ const Dashboard = () => {
                   </button>
                 ))}
               </div>
+              <h1 className="mb-4 bg-white text-black max-w-lg px-4 py-3 rounded-lg">
+                Allergènes
+              </h1>
               {/* Composant Toggle Token pour les allergènes de produit */}
-              <div className="flex flex-wrap gap-2 mb-4 bg-green-800 p-4 rounded-lg">
-                <h1>Allergènes</h1>
+              <div className="flex flex-wrap gap-2 mb-4 bg-green-800 p-2 rounded-lg">
+                <h1 className="text-white text-center mb-2">Allergènes</h1>
                 {[
                   "Gluten",
                   "Fruits de mer",
@@ -881,7 +887,7 @@ const Dashboard = () => {
                   <button
                     key={allergenes}
                     onClick={() => handleToggleAllergenes(allergenes)}
-                    className={`px-4 py-2 rounded-lg transition duration-200 ${
+                    className={`px-3 py-1 rounded-lg transition duration-200 ${
                       productInput.allergenes.includes(allergenes)
                         ? "bg-green-500 text-white"
                         : "bg-gray-200 text-gray-800"
@@ -891,13 +897,14 @@ const Dashboard = () => {
                   </button>
                 ))}
               </div>
-              <button
-                onClick={() =>
-                  updateProduct(productIdToEdit).then(() => {
-                    fetchData(`${URL_BASE}/products`, setProducts);
-                    setIsModalOpen(false);
-                    setProductInput(
-                      {
+
+              <div className="flex justify-between">
+                <button
+                  onClick={() =>
+                    updateProduct(productIdToEdit).then(() => {
+                      fetchData(`${URL_BASE}/products`, setProducts);
+                      setIsModalOpen(false);
+                      setProductInput({
                         name: "",
                         price: "",
                         description: "",
@@ -905,24 +912,24 @@ const Dashboard = () => {
                         image: "",
                         options: [],
                         allergenes: [],
-                      } // Réinitialiser les champs
-                    );
-                  })
-                } // Passer l'ID du produit à mettre à jour
-                className="bg-blue-600 text-white p-3 rounded-lg mr-8 hover:bg-blue-500 transition duration-200"
-              >
-                Enregistrer
-              </button>
+                      }); // Réinitialiser les champs
+                    })
+                  }
+                  className="bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-500 transition duration-200 w-1/2 mr-1"
+                >
+                  Enregistrer
+                </button>
 
-              <button
-                onClick={() => {
-                  setIsModalOpen(false); // Fermer le modal
-                  setProductIdToEdit(null); // Réinitialiser l'ID du produit à éditer
-                }}
-                className="bg-red-500 text-white p-3 rounded-lg  hover:bg-red-400 transition duration-200 mt-2"
-              >
-                Annuler
-              </button>
+                <button
+                  onClick={() => {
+                    setIsModalOpen(false); // Fermer le modal
+                    setProductIdToEdit(null); // Réinitialiser l'ID du produit à éditer
+                  }}
+                  className="bg-red-500 text-white p-2 rounded-lg hover:bg-red-400 transition duration-200 w-1/2 ml-1"
+                >
+                  Annuler
+                </button>
+              </div>
             </div>
           </div>
         )}

@@ -53,12 +53,6 @@ const ProductPopup = ({ product, onClose, onAddToCart }) => {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div ref={popupRef} className="bg-white rounded-lg shadow-lg w-11/12 max-w-md p-6">
-        <button
-          onClick={onClose}
-          className="text-red-500 text-sm font-bold mb-4"
-        >
-          Fermer
-        </button>
         <img
           src={product.imageSrc}
           alt={product.title}
@@ -110,7 +104,7 @@ const Menu = () => {
     const data = await fetchCategories();
     setCategories(data);
     if (data.length > 0) {
-      setSelectedCategory(data[0].Name);
+      setSelectedCategory(data[1].Name);
     }
   };
 
