@@ -20,13 +20,13 @@ const Dashboard = () => {
     subCategory: "",
     image: "",
     description: "",
-    options: "",
+    options: [],
+    allergenes: [],
   });
   const [searchTerm, setSearchTerm] = useState("");
   const [error, setError] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [setIsEditing] = useState(false);
-  const [isEditing] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
   const [productIdToEdit, setProductIdToEdit] = useState(null);
   const filteredProducts = products.filter((product) =>
     product.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -196,7 +196,9 @@ const Dashboard = () => {
         subCategoryId: productInput.subCategory, // Utilisation de "subCategoryId"
         imageUrl: productInput.image, // Utilisation de "imageUrl"
         options: productInput.options,
+        allergenes: productInput.allergenes,
       });
+      console.log("body", body);
       const response = await fetch(`${URL_BASE}/products`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -221,7 +223,8 @@ const Dashboard = () => {
         subCategory: "",
         image: "",
         description: "",
-        options: "",
+        options: [],
+        allergenes: [],
       });
     } catch (error) {
       console.error("Erreur:", error);
@@ -256,6 +259,7 @@ const Dashboard = () => {
         subCategoryId: productInput.subCategory, // Utilisation de "subCategoryId"
         imageUrl: productInput.image, // Utilisation de "imageUrl"
         options: productInput.options,
+        allergenes: productInput.allergenes,
       });
       console.log("body", body);
       await fetch(`${URL_BASE}/products/${productIdToEdit}`, {
@@ -274,7 +278,8 @@ const Dashboard = () => {
         description: "",
         subCategory: "",
         image: "",
-        options: "",
+        options: [],
+        allergenes: [],
       }); // Réinitialiser les champs
     } catch (error) {
       console.error("Erreur lors de la mise à jour du produit", error);
@@ -584,314 +589,418 @@ const Dashboard = () => {
     });
   };
 
+  const handleToggleAllergenes = (allergene) => {
+    console.log("allergene", allergene);
+    
+    // Vérifiez si allergene est défini et n'est pas une chaîne vide
+    if (allergene === undefined || allergene === "") {
+      console.warn("allergene is undefined or empty");
+      return; // Sortir de la fonction si allergene est undefined ou vide
+    }
+  
+    setProductInput((prevState) => {
+      // Vérifie si prevState existe et si prevState.allergenes est bien un tableau
+      const allergenes = prevState?.allergenes ?? [];
+      const updatedAllergenes = allergenes.includes(allergene)
+        ? allergenes.filter((item) => item !== allergene) // supprime si déjà sélectionné
+        : [...allergenes, allergene]; // ajoute si non sélectionné
+  
+      return { ...prevState, allergenes: updatedAllergenes };
+    });
+  };
+
   const renderProducts = () => (
-    <section className="products">
-      <h2 className="text-xl sm:text-2xl font-semibold mb-4">Produits</h2>
+    console.log("ETAT DE ALLERGENE", productInput),
+    (
+      <section className="products">
+        <h2 className="text-xl sm:text-2xl font-semibold mb-4">Produits</h2>
 
-      <div className="flex items-center w-full max-w-full space-x-2 rounded-lg border border-gray-300 bg-gray-50 dark:bg-gray-900 px-3.5 py-2 mt-5 mb-12">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-          stroke="green"
-          className="size-6"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+        <div className="flex items-center w-full max-w-full space-x-2 rounded-lg border border-gray-300 bg-gray-50 dark:bg-gray-900 px-3.5 py-2 mt-5 mb-12">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="green"
+            className="size-6"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+            />
+          </svg>
+
+          <Input
+            type="search"
+            placeholder="Rechercher un produit ..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full border-0 h-8 font-semibold text-green-800 placeholder:text-green-800"
           />
-        </svg>
-
-        <Input
-          type="search"
-          placeholder="Rechercher un produit ..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full border-0 h-8 font-semibold text-green-800 placeholder:text-green-800"
-        />
-      </div>
-
-      <input
-        type="text"
-        value={productInput.name}
-        onChange={(e) =>
-          setProductInput({ ...productInput, name: e.target.value })
-        }
-        placeholder="Nom du produit"
-        className=" bg-white p-3 rounded-lg mb-4 w-full focus:outline-none focus:ring-2 text-green-800 focus:ring-green-500 transition duration-200 placeholder:text-green-800"
-      />
-
-      <input
-        type="number"
-        value={productInput.price}
-        onChange={(e) =>
-          setProductInput({ ...productInput, price: e.target.value })
-        }
-        placeholder="Prix du produit"
-        className=" bg-white p-3 rounded-lg mb-4 w-full focus:outline-none focus:ring-2 text-green-800 focus:ring-green-500 transition duration-200 placeholder:text-green-800"
-      />
-
-      <input
-        type="text"
-        value={productInput.description}
-        onChange={(e) =>
-          setProductInput({ ...productInput, description: e.target.value })
-        }
-        placeholder="Description du produit"
-        className="text-green-800 bg-white p-3 rounded-lg mb-4 w-full focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-200 placeholder:text-green-800"
-      />
-
-      <select
-        value={productInput.subCategory}
-        onChange={(e) =>
-          setProductInput({ ...productInput, subCategory: e.target.value })
-        }
-        className="bg-white text-green-800 p-3 rounded-lg mb-4 w-full h-12 focus:outline-none  focus:ring-2 focus:ring-green-500 transition duration-200"
-      >
-        <option value="" className="bg-white">
-          Sélectionnez une sous-catégorie
-        </option>
-        {subCategories.map((subCategory) => (
-          <option key={subCategory._id} value={subCategory._id}>
-            {subCategory.name}
-          </option>
-        ))}
-      </select>
-
-      <input
-        type="text"
-        value={productInput.image}
-        onChange={(e) =>
-          setProductInput({ ...productInput, image: e.target.value })
-        }
-        placeholder="URL de l'image du produit"
-        className="text-green-800 bg-white p-3 rounded-lg mb-4 w-full  placeholder:text-green-800 focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-200"
-      />
-
-      {/* Composant Toggle Token pour les options de produit */}
-      <div className="flex flex-wrap gap-2 mb-4 bg-green-800 p-4 rounded-lg">
-        {[
-          "1 oeuf",
-          "2 oeufs",
-          "piment niveau 1",
-          "piment niveau 2",
-          "piment niveau 3",
-          "piment niveau 4",
-          "piment niveau 5",
-          "piment niveau 6",
-        ].map((option) => (
-          <button
-            key={option}
-            onClick={() => handleToggleOption(option)}
-            className={`px-4 py-2 rounded-lg transition duration-200 ${
-              productInput.options.includes(option)
-                ? "bg-green-500 text-white"
-                : "bg-gray-200 text-gray-800"
-            }`}
-          >
-            {option}
-          </button>
-        ))}
-      </div>
-
-      <button
-        onClick={addProduct} // Ajout d'un produit
-        className="bg-green-600 text-white p-3 rounded-lg mb-4 w-full sm:w-auto hover:bg-green-500 transition duration-200"
-      >
-        Ajouter Produit
-      </button>
-
-      {/* Afficher le modal d'édition si ouvert */}
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-gray-700 p-4 rounded-lg shadow-md">
-            <h3 className="text-lg font-semibold text-white mb-2">
-              Édition du Produit
-            </h3>
-            <input
-              type="text"
-              value={productInput.name}
-              onChange={(e) =>
-                setProductInput({ ...productInput, name: e.target.value })
-              }
-              placeholder="Nom du produit"
-              className="text-green-800 bg-white p-2 rounded-lg mb-2 w-full focus:outline-none focus:ring-2 placeholder:text-green-800 focus:ring-green-500 transition duration-200"
-            />
-
-            <input
-              type="number"
-              value={productInput.price}
-              onChange={(e) =>
-                setProductInput({ ...productInput, price: e.target.value })
-              }
-              placeholder="Prix du produit"
-              className="placeholder:text-green-800 bg-white p-2 rounded-lg mb-2 w-full text-green-800 focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-200"
-            />
-
-            <input
-              type="text"
-              value={productInput.description}
-              onChange={(e) =>
-                setProductInput({
-                  ...productInput,
-                  description: e.target.value,
-                })
-              }
-              placeholder="Description du produit"
-              className="placeholder:text-green-800 bg-white p-2 rounded-lg mb-2 w-full text-green-800 focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-200"
-            />
-
-            <select
-              value={productInput.subCategory}
-              onChange={(e) =>
-                setProductInput({
-                  ...productInput,
-                  subCategory: e.target.value,
-                })
-              }
-              className="text-green-800 bg-white p-2 rounded-lg mb-2 w-full h-12 focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-200"
-            >
-              <option value="">Sélectionnez une sous-catégorie</option>
-              {subCategories.map((subCategory) => (
-                <option key={subCategory._id} value={subCategory._id}>
-                  {subCategory.name}
-                </option>
-              ))}
-            </select>
-
-            <input
-              type="text"
-              value={productInput.image}
-              onChange={(e) =>
-                setProductInput({ ...productInput, image: e.target.value })
-              }
-              placeholder="URL de l'image du produit"
-              className=" bg-white p-2 rounded-lg mb-2 placeholder:text-green-800 w-full focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-200"
-            />
-
-            {/* Composant Toggle Token pour les options de produit */}
-            <div className="flex flex-wrap gap-2 mb-4 bg-green-800 p-4 rounded-lg">
-              {[
-                "1 oeuf",
-                "2 oeufs",
-                "piment niveau 1",
-                "piment niveau 2",
-                "piment niveau 3",
-                "piment niveau 4",
-                "piment niveau 5",
-                "piment niveau 6",
-              ].map((option) => (
-                <button
-                  key={option}
-                  onClick={() => handleToggleOption(option)}
-                  className={`px-4 py-2 rounded-lg transition duration-200 ${
-                    productInput.options.includes(option)
-                      ? "bg-green-500 text-white"
-                      : "bg-gray-200 text-gray-800"
-                  }`}
-                >
-                  {option}
-                </button>
-              ))}
-            </div>
-
-            <button
-              onClick={() =>
-                updateProduct(productIdToEdit).then(() => {
-                  fetchData(`${URL_BASE}/products`, setProducts);
-                  setIsModalOpen(false);
-                  setProductInput(
-                    {
-                      name: "",
-                      price: "",
-                      description: "",
-                      subCategory: "",
-                      image: "",
-                      options: "",
-                    } // Réinitialiser les champs
-                  );
-                })
-              } // Passer l'ID du produit à mettre à jour
-              className="bg-blue-600 text-white p-3 rounded-lg mr-8 hover:bg-blue-500 transition duration-200"
-            >
-              Enregistrer
-            </button>
-
-            <button
-              onClick={() => {
-                setIsModalOpen(false); // Fermer le modal
-                setProductIdToEdit(null); // Réinitialiser l'ID du produit à éditer
-              }}
-              className="bg-red-500 text-white p-3 rounded-lg  hover:bg-red-400 transition duration-200 mt-2"
-            >
-              Annuler
-            </button>
-          </div>
         </div>
-      )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        {filteredProducts.map((product) => (
-          <div
-            key={product.id}
-            className="bg-gray-800 p-4 rounded-lg shadow-md relative mb-4"
-          >
-            <h3 className="text-xl font-semibold text-white">{product.name}</h3>
+        <input
+          type="text"
+          value={productInput.name}
+          onChange={(e) =>
+            setProductInput({ ...productInput, name: e.target.value })
+          }
+          placeholder="Nom du produit"
+          className=" bg-white p-3 rounded-lg mb-4 w-full focus:outline-none focus:ring-2 text-green-800 focus:ring-green-500 transition duration-200 placeholder:text-green-800"
+        />
 
-            <div className="flex flex-col mt-4">
-              <img
-                src={product.imageUrl}
-                alt={product.description || "Image du produit"}
-                className="w-full h-48 object-cover rounded-lg"
+        <input
+          type="number"
+          value={productInput.price}
+          onChange={(e) =>
+            setProductInput({ ...productInput, price: e.target.value })
+          }
+          placeholder="Prix du produit"
+          className=" bg-white p-3 rounded-lg mb-4 w-full focus:outline-none focus:ring-2 text-green-800 focus:ring-green-500 transition duration-200 placeholder:text-green-800"
+        />
+
+        <input
+          type="text"
+          value={productInput.description}
+          onChange={(e) =>
+            setProductInput({ ...productInput, description: e.target.value })
+          }
+          placeholder="Description du produit"
+          className="text-green-800 bg-white p-3 rounded-lg mb-4 w-full focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-200 placeholder:text-green-800"
+        />
+
+        <select
+          value={productInput.subCategory}
+          onChange={(e) =>
+            setProductInput({ ...productInput, subCategory: e.target.value })
+          }
+          className="bg-white text-green-800 p-3 rounded-lg mb-4 w-full h-12 focus:outline-none  focus:ring-2 focus:ring-green-500 transition duration-200"
+        >
+          <option value="" className="bg-white">
+            Sélectionnez une sous-catégorie
+          </option>
+          {subCategories.map((subCategory) => (
+            <option key={subCategory._id} value={subCategory._id}>
+              {subCategory.name}
+            </option>
+          ))}
+        </select>
+
+        <input
+          type="text"
+          value={productInput.image}
+          onChange={(e) =>
+            setProductInput({ ...productInput, image: e.target.value })
+          }
+          placeholder="URL de l'image du produit"
+          className="text-green-800 bg-white p-3 rounded-lg mb-8 w-full  placeholder:text-green-800 focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-200"
+        />
+        <h1 className="mb-4 bg-white text-black max-w-lg px-4 py-3 rounded-lg">
+          Options
+        </h1>
+        {/* Composant Toggle Token pour les options de produit */}
+        <div className="flex flex-wrap gap-2 mb-4 bg-green-800 p-4 rounded-lg">
+          {[
+            "1 oeuf",
+            "2 oeufs",
+            "piment niveau 1",
+            "piment niveau 2",
+            "piment niveau 3",
+            "piment niveau 4",
+            "piment niveau 5",
+            "piment niveau 6",
+          ].map((option) => (
+            <button
+              key={option}
+              onClick={() => handleToggleOption(option)}
+              className={`px-4 py-2 rounded-lg transition duration-200 ${
+                productInput.options.includes(option)
+                  ? "bg-green-500 text-white"
+                  : "bg-gray-200 text-gray-800"
+              }`}
+            >
+              {option}
+            </button>
+          ))}
+        </div>
+        <h1 className="mb-4 bg-white text-black max-w-lg px-4 py-3 rounded-lg">
+          Allergènes
+        </h1>
+
+        {/* Composant Toggle Token pour les allergènes de produit */}
+        <div className="flex flex-wrap gap-2 mb-4 bg-blue-800 p-4 rounded-lg">
+          {[
+            "Gluten",
+            "Fruits de mer",
+            "Oeufs",
+            "Arachides",
+            "Soja",
+            "Laitage",
+            "Poisson",
+            "Sésame",
+            "Moutarde",
+            "Crustacés",
+            "Fruits à coque",
+            "Sulfites",
+            "Lupin",
+            "Céleri",
+          ].map((allergenes) => (
+            <button
+              key={allergenes}
+              onClick={() => handleToggleAllergenes(allergenes)}
+              className={`px-4 py-2 rounded-lg transition duration-200 ${
+                productInput.allergenes.includes(allergenes)
+                  ? "bg-green-500 text-white"
+                  : "bg-gray-200 text-gray-800"
+              }`}
+            >
+              {allergenes}
+            </button>
+          ))}
+        </div>
+
+        <button
+          onClick={addProduct} // Ajout d'un produit
+          className="bg-green-600 text-white p-3 rounded-lg mb-4 w-full sm:w-auto hover:bg-green-500 transition duration-200"
+        >
+          Ajouter Produit
+        </button>
+
+        {/* Afficher le modal d'édition si ouvert */}
+        {isModalOpen && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+            <div className="bg-gray-700 p-4 rounded-lg shadow-md">
+              <h3 className="text-lg font-semibold text-white mb-2">
+                Édition du Produit
+              </h3>
+              <input
+                type="text"
+                value={productInput.name}
+                onChange={(e) =>
+                  setProductInput({ ...productInput, name: e.target.value })
+                }
+                placeholder="Nom du produit"
+                className="text-green-800 bg-white p-2 rounded-lg mb-2 w-full focus:outline-none focus:ring-2 placeholder:text-green-800 focus:ring-green-500 transition duration-200"
               />
-            </div>
-            <div className="flex flex-col mt-4">
-              <p className="text-gray-300">{product.description}</p>
-              <div className="grid grid-cols-2 gap-4 mt-4 mb-4">
-                {product.options?.map((option, index) => (
+
+              <input
+                type="number"
+                value={productInput.price}
+                onChange={(e) =>
+                  setProductInput({ ...productInput, price: e.target.value })
+                }
+                placeholder="Prix du produit"
+                className="placeholder:text-green-800 bg-white p-2 rounded-lg mb-2 w-full text-green-800 focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-200"
+              />
+
+              <input
+                type="text"
+                value={productInput.description}
+                onChange={(e) =>
+                  setProductInput({
+                    ...productInput,
+                    description: e.target.value,
+                  })
+                }
+                placeholder="Description du produit"
+                className="placeholder:text-green-800 bg-white p-2 rounded-lg mb-2 w-full text-green-800 focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-200"
+              />
+
+              <select
+                value={productInput.subCategory}
+                onChange={(e) =>
+                  setProductInput({
+                    ...productInput,
+                    subCategory: e.target.value,
+                  })
+                }
+                className="text-green-800 bg-white p-2 rounded-lg mb-2 w-full h-12 focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-200"
+              >
+                <option value="">Sélectionnez une sous-catégorie</option>
+                {subCategories.map((subCategory) => (
+                  <option key={subCategory._id} value={subCategory._id}>
+                    {subCategory.name}
+                  </option>
+                ))}
+              </select>
+
+              <input
+                type="text"
+                value={productInput.image}
+                onChange={(e) =>
+                  setProductInput({ ...productInput, image: e.target.value })
+                }
+                placeholder="URL de l'image du produit"
+                className=" bg-white p-2 rounded-lg mb-2 placeholder:text-green-800 w-full focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-200"
+              />
+              {/* Composant Toggle Token pour les options de produit */}
+              <div className="flex flex-wrap gap-2 mb-4 bg-green-800 p-4 rounded-lg">
+                {[
+                  "1 oeuf",
+                  "2 oeufs",
+                  "piment niveau 1",
+                  "piment niveau 2",
+                  "piment niveau 3",
+                  "piment niveau 4",
+                  "piment niveau 5",
+                  "piment niveau 6",
+                ].map((option) => (
                   <button
-                    key={index}
-                    className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 focus:outline-none transition-colors"
+                    key={option}
+                    onClick={() => handleToggleOption(option)}
+                    className={`px-4 py-2 rounded-lg transition duration-200 ${
+                      productInput.options.includes(option)
+                        ? "bg-green-500 text-white"
+                        : "bg-gray-200 text-gray-800"
+                    }`}
                   >
                     {option}
                   </button>
                 ))}
               </div>
-              <p className="text-gray-300">{product.price} €</p>
-              <p className="text-gray-300">{product.subCategoryId}</p>
-            </div>
-            <div className="flex justify-between mt-4">
+              {/* Composant Toggle Token pour les allergènes de produit */}
+              <div className="flex flex-wrap gap-2 mb-4 bg-green-800 p-4 rounded-lg">
+                <h1>Allergènes</h1>
+                {[
+                  "Gluten",
+                  "Fruits de mer",
+                  "Oeufs",
+                  "Arachides",
+                  "Soja",
+                  "Laitage",
+                  "Poisson",
+                  "Sésame",
+                  "Moutarde",
+                  "Crustacés",
+                  "Fruits à coque",
+                  "Sulfites",
+                  "Lupin",
+                  "Céleri",
+                ].map((allergenes) => (
+                  <button
+                    key={allergenes}
+                    onClick={() => handleToggleAllergenes(allergenes)}
+                    className={`px-4 py-2 rounded-lg transition duration-200 ${
+                      productInput.allergenes.includes(allergenes)
+                        ? "bg-green-500 text-white"
+                        : "bg-gray-200 text-gray-800"
+                    }`}
+                  >
+                    {allergenes}
+                  </button>
+                ))}
+              </div>
+              <button
+                onClick={() =>
+                  updateProduct(productIdToEdit).then(() => {
+                    fetchData(`${URL_BASE}/products`, setProducts);
+                    setIsModalOpen(false);
+                    setProductInput(
+                      {
+                        name: "",
+                        price: "",
+                        description: "",
+                        subCategory: "",
+                        image: "",
+                        options: [],
+                        allergenes: [],
+                      } // Réinitialiser les champs
+                    );
+                  })
+                } // Passer l'ID du produit à mettre à jour
+                className="bg-blue-600 text-white p-3 rounded-lg mr-8 hover:bg-blue-500 transition duration-200"
+              >
+                Enregistrer
+              </button>
+
               <button
                 onClick={() => {
-                  setProductInput({
-                    name: product.name,
-                    price: product.price,
-                    description: product.description,
-                    subCategory: product.subCategoryId,
-                    image: product.image,
-                    options: product.options,
-                  });
-                  setProductIdToEdit(product.id); // Récupérer l'ID du produit pour l'édition
-                  setIsModalOpen(true); // Ouvrir le modal d'édition
-                  setIsEditing(true); // Indiquer que nous sommes en mode édition
+                  setIsModalOpen(false); // Fermer le modal
+                  setProductIdToEdit(null); // Réinitialiser l'ID du produit à éditer
                 }}
-                className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-500 transition duration-200"
+                className="bg-red-500 text-white p-3 rounded-lg  hover:bg-red-400 transition duration-200 mt-2"
               >
-                Éditer
-              </button>
-              <button
-                onClick={() => deleteProduct(product.id)} // Logique de suppression
-                className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-400 transition duration-200"
-              >
-                Supprimer
+                Annuler
               </button>
             </div>
           </div>
-        ))}
-      </div>
-    </section>
+        )}
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          {filteredProducts.map((product) => (
+            <div
+              key={product.id}
+              className="bg-gray-800 p-4 rounded-lg shadow-md relative mb-4"
+            >
+              <h3 className="text-xl font-semibold text-white">
+                {product.name}
+              </h3>
+
+              <div className="flex flex-col mt-4">
+                <img
+                  src={product.imageUrl}
+                  alt={product.description || "Image du produit"}
+                  className="w-full h-48 object-cover rounded-lg"
+                />
+              </div>
+              <div className="flex flex-col mt-4">
+                <p className="text-gray-300">{product.Description}</p>
+                <div className="grid grid-cols-2 gap-4 mt-4 mb-4">
+                  {product.options?.map((option, index) => (
+                    <button
+                      key={index}
+                      className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 focus:outline-none transition-colors"
+                    >
+                      {option}
+                    </button>
+                  ))}
+                </div>
+                <div className="grid grid-cols-2 gap-4 mt-4 mb-4">
+                  {product.allergenes?.map((allergenes, index) => (
+                    <button
+                      key={index}
+                      className="px-4 py-2 bg-green-800 text-gray-800 rounded-md hover:bg-green-400 focus:outline-none transition-colors"
+                    >
+                      {allergenes}
+                    </button>
+                  ))}
+                </div>
+                <p className="text-gray-300">{product.price} €</p>
+                <p className="text-gray-300">{product.subCategoryId}</p>
+              </div>
+              <div className="flex justify-between mt-4">
+                <button
+                  onClick={() => {
+                    setProductInput({
+                      name: product.name,
+                      price: product.price,
+                      description: product.description,
+                      subCategory: product.subCategoryId,
+                      image: product.image,
+                      options: product.options,
+                      allergenes: product.allergenes,
+                    });
+                    setProductIdToEdit(product.id); // Récupérer l'ID du produit pour l'édition
+                    setIsModalOpen(true); // Ouvrir le modal d'édition
+                    setIsEditing(true); // Indiquer que nous sommes en mode édition
+                  }}
+                  className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-500 transition duration-200"
+                >
+                  Éditer
+                </button>
+                <button
+                  onClick={() => deleteProduct(product.id)} // Logique de suppression
+                  className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-400 transition duration-200"
+                >
+                  Supprimer
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    )
   );
 
   const renderContent = () => {
