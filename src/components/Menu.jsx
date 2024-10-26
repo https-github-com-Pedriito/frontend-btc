@@ -1,7 +1,23 @@
-import { useState, useEffect,useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import { fetchCategories, fetchProducts, fetchSubCategories } from "../api";
 
+const allergenesIcons = {
+  Gluten: "🌾",
+  "Fruits de mer": "🦐",
+  Oeufs: "🥚",
+  Arachides: "🥜",
+  Soja: "🌱",
+  Laitage: "🥛",
+  Poisson: "🐟",
+  Sésame: "🌿",
+  Moutarde: "🌿",
+  Crustacés: "🦀",
+  "Fruits à coque": "🌰",
+  Sulfites: "🧪",
+  Lupin: "🌼",
+  Céleri: "🥬",
+};
 // Composant Card pour afficher une seule carte
 const Card = ({ imageSrc, title, price, description, onClick }) => {
   return (
@@ -51,38 +67,86 @@ const ProductPopup = ({ product, onClose, onAddToCart }) => {
   if (!product) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div ref={popupRef} className="bg-white rounded-lg shadow-lg w-11/12 max-w-md p-6">
-        <img
-          src={product.imageSrc}
-          alt={product.title}
-          className="w-full h-48 object-cover rounded-lg mb-4"
-        />
-        <h2 className="text-2xl font-bold text-gray-800">{product.title}</h2>
-        <p className="text-lg text-gray-600 mt-2">{product.price} €</p>
-        <p className="text-gray-700 mt-4">{product.description}</p>
-        <div className="mt-4">
-          {product.options && product.options.length > 0 && (
-            <div>
-              <h3 className="text-md font-semibold text-gray-800">
-                Options :
-              </h3>
-              <div className="grid px-2 py-2 rounded-lg transition duration-200 max-w-fit bg-green-800">
-                {product.options.map((option, index) => (
-                  <p key={index}>{option}</p>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-        <button
-          onClick={() => onAddToCart(product)}
-          className="mt-6 px-4 py-2 bg-green-500 text-white rounded-lg"
+    console.log(product),
+    (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
+        <div
+          ref={popupRef}
+          className="relative bg-white rounded-lg shadow-lg w-full max-w-sm p-4"
         >
-          Ajouter au panier
-        </button>
+          {/* Bouton de fermeture */}
+          <button
+            onClick={onClose}
+            className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center"
+          >
+            &times;
+          </button>
+
+          <img
+            src={product.imageSrc}
+            alt={product.title}
+            className="w-full h-32 object-cover rounded-lg mb-3"
+          />
+          <h2 className="text-lg font-bold text-gray-800 text-center">
+            {product.title}
+          </h2>
+          <p className="text-md text-gray-600 mt-1 text-center">
+            {product.price} €
+          </p>
+          <p className="text-gray-700 mt-2 text-center text-sm">
+            {product.description}
+          </p>
+
+          <div className="mt-3">
+            {product.options && product.options.length > 0 && (
+              <div>
+                <h3 className="text-md font-semibold text-gray-800">
+                  Options :
+                </h3>
+                <div className="grid grid-cols-1 gap-1 p-1 rounded-lg transition duration-200 bg-white">
+                  {product.options.map((option, index) => (
+                    <div
+                      key={index}
+                      className="bg-green-800 p-1 rounded-lg  text-gray-800 text-center text-sm"
+                    >
+                      {option}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="mt-3">
+            {product.allergenes && product.allergenes.length > 0 && (
+              <div>
+                <h3 className="text-md font-semibold text-gray-800">
+                  Allergènes :
+                </h3>
+                <div className="grid grid-cols-1 gap-1 px-1 py-1 rounded-lg transition duration-200 bg-white">
+                  {product.allergenes.map((allergene, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center bg-white p-1 rounded-lg text-gray-800 text-center text-sm"
+                    >
+                      <span className="mr-1">{allergenesIcons[allergene]}</span>
+                      {allergene}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          <button
+            onClick={() => onAddToCart(product)}
+            className="mt-4 w-lg px-4 py-2 bg-green-500 text-white rounded-lg text-sm"
+          >
+            Ajouter au panier
+          </button>
+        </div>
       </div>
-    </div>
+    )
   );
 };
 
@@ -136,16 +200,22 @@ const Menu = () => {
             title: product.name,
             price: product.price,
             imageSrc: product.imageUrl || "default_image_url.jpg",
-            category: subCategory ? categoryMap[subCategory.categoryId] : "Non Défini",
+            category: subCategory
+              ? categoryMap[subCategory.categoryId]
+              : "Non Défini",
             subCategory: subCategory ? subCategory.name : "Non Défini",
             description: product.Description, // Correction ici
             options: product.options || [],
+            allergenes: product.allergenes || [],
           };
         });
 
         setMenuItems(allMenuItems);
       } catch (error) {
-        console.error("Erreur lors de la récupération des items de menu :", error);
+        console.error(
+          "Erreur lors de la récupération des items de menu :",
+          error
+        );
       }
     };
 

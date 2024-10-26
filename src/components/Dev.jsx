@@ -1,4 +1,4 @@
-import  { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import dev_image from "../assets/dvlp.webp";
 
@@ -16,11 +16,11 @@ const Dev = () => {
   }, [navigate]);
 
   return (
-    <div>
+    <div className="fixed inset-0 overflow-hidden">
       <img 
         src={dev_image} 
         alt="image du développeur" 
-        className="w-full object-fill" 
+        className="w-full h-full object-cover" 
       />
     </div>
   );

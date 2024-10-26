@@ -23,6 +23,22 @@ const Dashboard = () => {
     options: [],
     allergenes: [],
   });
+  const allergenesIcons = {
+    Gluten: "🌾",
+    "Fruits de mer": "🦞",
+    Oeufs: "🥚",
+    Arachides: "🥜",
+    Soja: "🌱",
+    Laitage: "🥛",
+    Poisson: "🐟",
+    Sésame: "🌾",
+    Moutarde: "🌿",
+    Crustacés: "🦐",
+    "Fruits à coque": "🌰",
+    Sulfites: "⚠️",
+    Lupin: "🌸",
+    Céleri: "🥬",
+  };
   const [searchTerm, setSearchTerm] = useState("");
   const [error, setError] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -729,7 +745,7 @@ const Dashboard = () => {
         </h1>
 
         {/* Composant Toggle Token pour les allergènes de produit */}
-        <div className="flex flex-wrap gap-2 mb-4 bg-blue-800 p-4 rounded-lg">
+        <div className="flex flex-wrap gap-2 mb-4 bg-green-800 p-2 rounded-lg">
           {[
             "Gluten",
             "Fruits de mer",
@@ -745,17 +761,18 @@ const Dashboard = () => {
             "Sulfites",
             "Lupin",
             "Céleri",
-          ].map((allergenes) => (
+          ].map((allergene) => (
             <button
-              key={allergenes}
-              onClick={() => handleToggleAllergenes(allergenes)}
-              className={`px-4 py-2 rounded-lg transition duration-200 ${
-                productInput.allergenes.includes(allergenes)
+              key={allergene}
+              onClick={() => handleToggleAllergenes(allergene)}
+              className={`px-3 py-1 rounded-lg transition duration-200 ${
+                productInput.allergenes.includes(allergene)
                   ? "bg-green-500 text-white"
                   : "bg-gray-200 text-gray-800"
               }`}
             >
-              {allergenes}
+              <span className="mr-1">{allergenesIcons[allergene]}</span>
+              {allergene}
             </button>
           ))}
         </div>
@@ -883,17 +900,18 @@ const Dashboard = () => {
                   "Sulfites",
                   "Lupin",
                   "Céleri",
-                ].map((allergenes) => (
+                ].map((allergene) => (
                   <button
-                    key={allergenes}
-                    onClick={() => handleToggleAllergenes(allergenes)}
+                    key={allergene}
+                    onClick={() => handleToggleAllergenes(allergene)}
                     className={`px-3 py-1 rounded-lg transition duration-200 ${
-                      productInput.allergenes.includes(allergenes)
+                      productInput.allergenes.includes(allergene)
                         ? "bg-green-500 text-white"
                         : "bg-gray-200 text-gray-800"
                     }`}
                   >
-                    {allergenes}
+                    <span className="mr-1">{allergenesIcons[allergene]}</span>
+                    {allergene}
                   </button>
                 ))}
               </div>
@@ -969,7 +987,7 @@ const Dashboard = () => {
                       key={index}
                       className="px-4 py-2 bg-green-800 text-gray-800 rounded-md hover:bg-green-400 focus:outline-none transition-colors"
                     >
-                      {allergenes}
+                      {allergenes}{allergenesIcons[allergenes]}
                     </button>
                   ))}
                 </div>
