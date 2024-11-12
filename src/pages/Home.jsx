@@ -6,6 +6,7 @@ import RGPDBox from "../components/RGPDBox"; // Importer le composant
 import About from "../components/About";
 import Menu from "../components/Menu";
 import ExpandingComponent from "../components/ExpandingComponent";
+import Logo from "../assets/logo.png";
 
 const allergenesIcons = {
   "Gluten": "🌾",
@@ -59,8 +60,9 @@ const Home = () => {
     "Céleri",
   ];
   return (
-    <div>
+    <div className="h-screen bg-black">
       <header>
+        <div className="bg-black" > <img  src= {Logo} alt ="logo" className="block md:hidden w-20 h-20 mx-auto p-3 object-fit"></img></div>
         <Navbar />
       </header>
       <main>
