@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import { fetchCategories, fetchProducts, fetchSubCategories } from "../api";
 import { useCart } from "./CartContext";
-import { CornerDownLeft } from "lucide-react";
 const allergenesIcons = {
   Gluten: "🌾",
   "Fruits de mer": "🦐",
@@ -55,8 +54,6 @@ const ProductPopup = ({ product, onClose, addToCart }) => {
   const [selectedPerles, setSelectedPerles] = useState([]);
   const [selectedParfums, setSelectedParfums] = useState([]);
 
-
-
   const handleClickOutside = (event) => {
     if (popupRef.current && !popupRef.current.contains(event.target)) {
       onClose();
@@ -72,11 +69,8 @@ const ProductPopup = ({ product, onClose, addToCart }) => {
   };
 
   const toggleThe = (selectedThe) => {
-    setSelectedThe((prevThe) =>
-      prevThe === selectedThe ? [] : [selectedThe] 
-    );
+    setSelectedThe((prevThe) => (prevThe === selectedThe ? [] : [selectedThe]));
   };
-
 
   const togglePerle = (selectedPerle) => {
     setSelectedPerles((prevPerles) =>
@@ -90,8 +84,6 @@ const ProductPopup = ({ product, onClose, addToCart }) => {
     );
   };
 
-
-
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
@@ -103,159 +95,181 @@ const ProductPopup = ({ product, onClose, addToCart }) => {
 
   return (
     console.log(product),
-    <div className="fixed inset-0 bg-black/70 flex justify-center items-center">
-  <div
-    ref={popupRef}
-    className="relative bg-white rounded-lg shadow-lg w-3/4 p-8 h-5/6 overflow-y-auto sm:h-4/6"
-  >
-    <button
-      onClick={onClose}
-      className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center"
-    ></button>
+    (
+      <div className="fixed inset-0 bg-black/70 flex justify-center items-center">
+        <div
+          ref={popupRef}
+          className="relative bg-white rounded-lg shadow-lg w-3/4 p-8 h-5/6 overflow-y-auto sm:h-4/6"
+        >
+          <button
+            onClick={onClose}
+            className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center"
+          ></button>
 
-    <h2 className="text-2xl mb-2 sm:[text-2xl font-bold text-center text-gray-800 mb-4]">
-      {product.title}
-    </h2>
+          <h2 className="text-2xl mb-2 sm:[text-2xl font-bold text-center text-gray-800 mb-4]">
+            {product.title}
+          </h2>
 
-    <div className="flex flex-col sm:flex-row sm:space-x-6 items-center">
-      {/* Image à gauche */}
-      <div className="flex-shrink-0 sm:w-1/2">
-        <img
-          src={product.imageSrc}
-          alt={product.title}
-          className="w-3/4 h-auto object-cover mb-2 rounded-sm"
-        />
+          <div className="flex flex-col sm:flex-row sm:space-x-6 items-center">
+            {/* Image à gauche */}
+            <div className="flex-shrink-0 sm:w-1/2">
+              <img
+                src={product.imageSrc}
+                alt={product.title}
+                className="w-3/4 h-auto object-cover mb-2 rounded-sm"
+              />
+            </div>
+
+            {/* Informations à droite */}
+            <div className="flex flex-col space-y-4 items-center sm:w-1/2">
+              <p className="text-sm text-gray-600">{product.description}</p>
+
+              {product.options && product.options.length > 0 && (
+                <div className="mb-2">
+                  <h3 className="text-md font-semibold text-gray-800 mb-2">
+                    Options :
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {product.options.map((option, index) => (
+                      <div
+                        key={index}
+                        onClick={() => toggleOption(option)}
+                        className={`flex items-center text-sm rounded-full px-3 py-1 transition-all ${
+                          selectedOptions.includes(option)
+                            ? "bg-green-500 text-white"
+                            : "bg-gray-100 text-gray-800"
+                        }`}
+                      >
+                        {option}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {product.allergenes && product.allergenes.length > 0 && (
+                <div>
+                  <h3 className="text-md font-semibold text-gray-800 mb-2">
+                    Allergènes :
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {product.allergenes.map((allergene, index) => (
+                      <div
+                        key={index}
+                        className="flex items-center text-gray-800 text-sm bg-gray-100 rounded-full px-3 py-1"
+                      >
+                        <span className="mr-1">
+                          {allergenesIcons[allergene]}
+                        </span>
+                        {allergene}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {product.the && product.the.length > 0 && (
+                <div>
+                  <h3 className="text-md font-semibold text-gray-800 mb-2">
+                    Thé :
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {product.the.map((the, index) => (
+                      <div
+                        key={index}
+                        onClick={() => toggleThe(the)}
+                        className={`flex items-center text-sm rounded-full hover: cursor-pointer px-3 py-1 transition-all ${
+                          selectedThe.includes(the)
+                            ? "bg-green-500 text-white"
+                            : "bg-gray-100 text-gray-800"
+                        }`}
+                      >
+                        {the}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {product.perle && product.perle.length > 0 && (
+                <div>
+                  <h3 className="text-md font-semibold text-gray-800 mb-2">
+                    Perle :
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {product.perle.map((perle, index) => (
+                      <div
+                        key={index}
+                        onClick={() => togglePerle(perle)}
+                        className={`flex items-center text-sm rounded-full hover: cursor-pointer px-3 py-1 transition-all ${
+                          selectedPerles.includes(perle)
+                            ? "bg-green-500 text-white"
+                            : "bg-gray-100 text-gray-800"
+                        }`}
+                      >
+                        {perle}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {product.parfum && product.parfum.length > 0 && (
+                <div>
+                  <h3 className="text-md font-semibold text-gray-800 mb-2">
+                    Parfum :
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {product.parfum.map((parfum, index) => (
+                      <div
+                        key={index}
+                        onClick={() => toggleParfum(parfum)}
+                        className={`flex items-center text-sm rounded-full hover: cursor-pointer px-3 py-1 transition-all ${
+                          selectedParfums.includes(parfum)
+                            ? "bg-green-500 text-white"
+                            : "bg-gray-100 text-gray-800"
+                        }`}
+                      >
+                        {parfum}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <p className="flex flex-col  text-gray-700 text-2xl font-semibold">
+                {product.price} €
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-4 flex justify-center">
+            <button
+              onClick={() => {
+                const { parfum, perle, the, ...productWithoutExcludedProps } =
+                  product;
+                addToCart({
+                  ...productWithoutExcludedProps,
+                  selectedParfums,
+                  selectedPerles,
+                  selectedThe,
+                });
+                console.log("Produit ajouté au panier: ", {
+                  ...productWithoutExcludedProps,
+                  selectedParfums,
+                  selectedPerles,
+                  selectedThe,
+                });
+                onClose();
+              }}
+              className="px-6 py-3 bg-green-500 text-white mt-auto rounded-lg text-lg font-semibold"
+            >
+              Ajouter au panier
+            </button>
+          </div>
+        </div>
       </div>
-
-      {/* Informations à droite */}
-      <div className="flex flex-col space-y-4 items-center sm:w-1/2">
-        <p className="text-sm text-gray-600">{product.description}</p>
-
-        {product.options && product.options.length > 0 && (
-          <div className="mb-2">
-            <h3 className="text-md font-semibold text-gray-800 mb-2">Options :</h3>
-            <div className="flex flex-wrap gap-2">
-              {product.options.map((option, index) => (
-                <div
-                  key={index}
-                  onClick={() => toggleOption(option)}
-                  className={`flex items-center text-sm rounded-full px-3 py-1 transition-all ${
-                    selectedOptions.includes(option)
-                      ? "bg-green-500 text-white"
-                      : "bg-gray-100 text-gray-800"
-                  }`}
-                >
-                  {option}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {product.allergenes && product.allergenes.length > 0 && (
-          <div>
-            <h3 className="text-md font-semibold text-gray-800 mb-2">Allergènes :</h3>
-            <div className="flex flex-wrap gap-2">
-              {product.allergenes.map((allergene, index) => (
-                <div
-                  key={index}
-                  className="flex items-center text-gray-800 text-sm bg-gray-100 rounded-full px-3 py-1"
-                >
-                  <span className="mr-1">{allergenesIcons[allergene]}</span>
-                  {allergene}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {product.the && product.the.length > 0 && (
-          <div>
-            <h3 className="text-md font-semibold text-gray-800 mb-2">Thé :</h3>
-            <div className="flex flex-wrap gap-2">
-              {product.the.map((the, index) => (
-                <div
-                  key={index}
-                  onClick={() => toggleThe(the)}
-                  className={`flex items-center text-sm rounded-full px-3 py-1 transition-all ${
-                    selectedThe.includes(the)
-                      ? "bg-green-500 text-white"
-                      : "bg-gray-100 text-gray-800"
-                  }`}
-                >
-                  {the}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {product.perle && product.perle.length > 0 && (
-          <div>
-            <h3 className="text-md font-semibold text-gray-800 mb-2">Perle :</h3>
-            <div className="flex flex-wrap gap-2">
-              {product.perle.map((perle, index) => (
-                <div
-                
-                  key={index}
-                  onClick={() => togglePerle(perle)} 
-                  className={`flex items-center text-sm rounded-full hover: cursor-pointer px-3 py-1 transition-all ${
-                    selectedPerles.includes(perle)
-                      ? "bg-green-500 text-white"
-                      : "bg-gray-100 text-gray-800"
-                  }`}
-                >
-                  {perle}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {product.parfum && product.parfum.length > 0 && (
-          <div>
-            
-            <h3 className="text-md font-semibold text-gray-800 mb-2">Parfum :</h3>
-            <div className="flex flex-wrap gap-2">
-              {product.parfum.map((parfum, index) => (
-                <div
-                  key={index}
-                  onClick={() => toggleParfum(parfum)}
-                  className={`flex items-center text-sm rounded-full px-3 py-1 transition-all ${
-                    selectedParfums.includes(parfum)
-                      ? "bg-green-500 text-white"
-                      : "bg-gray-100 text-gray-800"
-                  }`}
-                >
-                  {parfum}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-
-        <p className="flex flex-col  text-gray-700 text-2xl font-semibold">
-          {product.price} €
-        </p>
-      </div>
-    </div>
-
-    <div className="mt-4 flex justify-center">
-      <button
-        onClick={() => {
-          const { parfum, perle, the, ...productWithoutExcludedProps } = product;
-          addToCart({ ...productWithoutExcludedProps, selectedParfums, selectedPerles, selectedThe });
-          console.log("Produit ajouté au panier: ", {...productWithoutExcludedProps, selectedParfums, selectedPerles, selectedThe });
-          onClose();
-        }}
-        className="px-6 py-3 bg-green-500 text-white mt-auto rounded-lg text-lg font-semibold"
-      >
-        Ajouter au panier
-      </button>
-    </div>
-  </div>
-</div>
+    )
   );
 };
 
