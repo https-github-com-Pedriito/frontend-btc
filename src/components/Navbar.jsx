@@ -1,69 +1,46 @@
-import { SlBasketLoaded } from "react-icons/sl";
-import { useState } from "react";
-import { FaBars } from "react-icons/fa";
 import logo from "../assets/logo.png";
 import { Link as RouterLink } from "react-router-dom"; // Pour la navigation entre pages
-
+import { House, ShoppingBag, ForkKnife } from "lucide-react";
+import { Badge } from "@mui/material";
+import { useCart } from "./CartContext";
 const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const toggleMenu = () => {
-    setIsOpen(!isOpen);
-  };
-
+  const { cart } = useCart();
   return (
     <div className="overflow-x-hidden overflow-y-hidden">
-      <div className="bg-black text-white p-4 z-10">
-        <div className="container mx-auto flex justify-between items-center rounded-full bg-white bg-opacity-15 px-8 py-2 border-solid border-white">
+      {/* Navbar */}
+      <div className="bg-black text-white p-2 z-10">
+        <div
+          id="navbar-bg"
+          className="mx-auto my-2 h-24 flex justify-between items-center rounded-full bg-white/25  px-4 md:px-10"
+        >
           <div className="flex items-center cursor-pointer">
-            <div className="w-24 h-24 mr-2">
+            <div className="hidden md:block w-10 h-auto">
               <img src={logo} alt="logo du restaurant" />
             </div>
-            <h1 className=" text-3xl text-greenspecial uppercase hidden md:block font-">
+            <h1 className="hidden md:block ml-2 text-lg text-greenspecial uppercase">
               Bo Tai <span className="text-white">Chanh</span>
             </h1>
           </div>
 
-          {/* Menu burger pour mobile */}
-          <div className="md:hidden">
-            <button
-              onClick={toggleMenu}
-              className="text-white focus:outline-none"
-            >
-              <FaBars size={28} />
-            </button>
-          </div>
-
           {/* Menu de navigation */}
-          <nav
-            className={`${
-              isOpen ? "flex" : "hidden"
-            } md:flex flex-col md:flex-row items-center text-lg font-medium gap-8 absolute md:static top-16 mt-8 mb-8 left-0 right-0 bg-black md:bg-transparent p-4 md:p-0 z-20`}
-          >
-            {/* Bouton Accueil (router pour retourner à la page principale + défilement vers la section About) */}
-            <RouterLink
-              to="/"
-              className="transition-all cursor-pointer bg-green-700 text-white shadow-neumorphic shadow-gray active:shadow-neumorphicInset rounded-full px-8 py-4"
-              onClick={toggleMenu}
-            >
-              Accueil
+          <nav className="flex-grow flex items-center justify-between md:justify-end  text-sm md:text-lg font-medium pr-16 pl-16 md:gap-8">
+            {/* Bouton Accueil */}
+            <RouterLink to="/" className="flex flex-col items-center">
+              <House />
+              <p className="hidden md:block">Accueil</p>
             </RouterLink>
 
-            {/* Bouton Menu pour naviguer vers la page du menu */}
-            <RouterLink
-              to="/PageMenu"
-              className="transition-all cursor-pointer bg-green-700 text-white shadow-neumorphic shadow-gray active:shadow-neumorphicInset rounded-full px-8 py-4"
-              onClick={toggleMenu}
-            >
-              Menu
+            {/* Bouton Menu */}
+            <RouterLink to="/PageMenu" className="flex flex-col items-center">
+              <ForkKnife />
+              <p className="hidden md:block">Menu</p>
             </RouterLink>
 
-            <RouterLink
-              to="/DevPage"
-              className="transition-all items-center cursor-pointer bg-red-700 text-white shadow-neumorphic shadow-gray active:shadow-neumorphicInset rounded-full px-8 py-6"
-              onClick={toggleMenu}
-            >
-              <SlBasketLoaded />
+            <RouterLink to="/BasketPage">
+              <Badge badgeContent={cart.length} color="error" className="flex flex-col items-center">
+                <ShoppingBag />
+                <p className="hidden md:block">Panier</p>
+              </Badge>
             </RouterLink>
           </nav>
         </div>

@@ -161,7 +161,7 @@ export default function ReservationPage() {
                 <p className=""><strong>Heure sélectionnée :</strong> {time}</p>
               </div>
               <div className="space-y-2">
-                <Button type="submit" className="w-full bg-green-600 text-black hover:bg-green-500">Confirmer la réservation</Button>
+                <Button  disabled={true} type="submit" className="w-full bg-green-600 text-black hover:bg-green-500">Confirmer la réservation</Button>
                 <Button type="button" variant="outline" className="w-full  border-green-500 hover:bg-green-600 hover:text-black" onClick={() => setStep(1)}>
                   Retour
                 </Button>

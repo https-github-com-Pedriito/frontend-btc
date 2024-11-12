@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import Footer from "./Footer";
 import Header from "./Header";
 import { Input } from "../components/ui/input";
+import BubbleTeaThe from "./BubbleTeaThe";
+import BubbleTeaPerle from "./BubbleTeaPerle";
+import BubbleTeaParfum from "./BubbleTeaParfum";
 
 const Dashboard = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -22,6 +25,9 @@ const Dashboard = () => {
     description: "",
     options: [],
     allergenes: [],
+    the: [],
+    perle: [],
+    parfum: [],
   });
   const allergenesIcons = {
     Gluten: "🌾",
@@ -213,6 +219,9 @@ const Dashboard = () => {
         imageUrl: productInput.image, // Utilisation de "imageUrl"
         options: productInput.options,
         allergenes: productInput.allergenes,
+        the: productInput.the,
+        perle: productInput.perle,
+        parfum: productInput.parfum,
       });
       console.log("body", body);
       const response = await fetch(`${URL_BASE}/products`, {
@@ -241,6 +250,9 @@ const Dashboard = () => {
         description: "",
         options: [],
         allergenes: [],
+        the: [],
+        perle: [],
+        parfum: [],
       });
     } catch (error) {
       console.error("Erreur:", error);
@@ -276,6 +288,9 @@ const Dashboard = () => {
         imageUrl: productInput.image, // Utilisation de "imageUrl"
         options: productInput.options,
         allergenes: productInput.allergenes,
+        the: productInput.the,
+        perle: productInput.perle,
+        parfum: productInput.parfum,
       });
       console.log("body", body);
       await fetch(`${URL_BASE}/products/${productIdToEdit}`, {
@@ -294,8 +309,6 @@ const Dashboard = () => {
         description: "",
         subCategory: "",
         image: "",
-        options: [],
-        allergenes: [],
       }); // Réinitialiser les champs
     } catch (error) {
       console.error("Erreur lors de la mise à jour du produit", error);
@@ -626,7 +639,7 @@ const Dashboard = () => {
   };
 
   const renderProducts = () => (
-    console.log("ETAT DE ALLERGENE", productInput),
+    console.log("productInput", productInput),
     (
       <section className="products">
         <h2 className="text-xl sm:text-2xl font-semibold mb-4">Produits</h2>
@@ -776,7 +789,22 @@ const Dashboard = () => {
             </button>
           ))}
         </div>
-
+        {productInput.name === "Bubble Tea" && (
+          <>
+            <BubbleTeaThe
+              productInput={productInput}
+              setProductInput={setProductInput}
+            />
+            <BubbleTeaPerle
+              productInput={productInput}
+              setProductInput={setProductInput}
+            />
+            <BubbleTeaParfum
+              productInput={productInput}
+              setProductInput={setProductInput}
+            />
+          </>
+        )}
         <button
           onClick={addProduct} // Ajout d'un produit
           className="bg-green-600 text-white p-3 rounded-lg mb-4 w-full sm:w-auto hover:bg-green-500 transition duration-200"
@@ -916,6 +944,22 @@ const Dashboard = () => {
                 ))}
               </div>
 
+              {productInput.name === "Bubble Tea" && (
+                <>
+                  <BubbleTeaThe
+                    productInput={productInput}
+                    setProductInput={setProductInput}
+                  />
+                  <BubbleTeaPerle
+                    productInput={productInput}
+                    setProductInput={setProductInput}
+                  />
+                  <BubbleTeaParfum
+                    productInput={productInput}
+                    setProductInput={setProductInput}
+                  />
+                </>
+              )}
               <div className="flex justify-between">
                 <button
                   onClick={() =>
@@ -987,7 +1031,38 @@ const Dashboard = () => {
                       key={index}
                       className="px-4 py-2 bg-green-800 text-gray-800 rounded-md hover:bg-green-400 focus:outline-none transition-colors"
                     >
-                      {allergenes}{allergenesIcons[allergenes]}
+                      {allergenes}
+                      {allergenesIcons[allergenes]}
+                    </button>
+                  ))}
+                </div>
+                <div className="grid grid-cols-2 gap-4 mt-4 mb-4">
+                  {product.the?.map((the, index) => (
+                    <button
+                      key={index}
+                      className="px-4 py-2 bg-green-800 text-gray-800 rounded-md hover:bg-green-400 focus:outline-none transition-colors"
+                    >
+                      {the}
+                    </button>
+                  ))}
+                </div>
+                <div className="grid grid-cols-2 gap-4 mt-4 mb-4">
+                  {product.perle?.map((perle, index) => (
+                    <button
+                      key={index}
+                      className="px-4 py-2 bg-green-800 text-gray-800 rounded-md hover:bg-green-400 focus:outline-none transition-colors"
+                    >
+                      {perle}
+                    </button>
+                  ))}
+                </div>
+                <div className="grid grid-cols-2 gap-4 mt-4 mb-4">
+                  {product.parfum?.map((parfum, index) => (
+                    <button
+                      key={index}
+                      className="px-4 py-2 bg-green-800 text-gray-800 rounded-md hover:bg-green-400 focus:outline-none transition-colors"
+                    >
+                      {parfum}
                     </button>
                   ))}
                 </div>
@@ -1005,6 +1080,9 @@ const Dashboard = () => {
                       image: product.image,
                       options: product.options,
                       allergenes: product.allergenes,
+                      the: product.the,
+                      perle: product.perle,
+                      parfum: product.parfum,
                     });
                     setProductIdToEdit(product.id); // Récupérer l'ID du produit pour l'édition
                     setIsModalOpen(true); // Ouvrir le modal d'édition

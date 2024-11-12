@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom"; // Importez Link
 import precommande_img from "../assets/precommande.jpg"; //
+import { Button } from "react-scroll";
 const PreOrderAd = () => {
   return (
     <div className="bg-black">
@@ -37,14 +38,14 @@ const PreOrderAd = () => {
               réservée. Profitez de votre repas sans attendre.
             </p>
             <div className="mt-10 flex items-center justify-center gap-x-6 lg:justify-start">
-              <Link
-                to="/DevPage"
+              <Link 
+                to="/preOrder"
                 className="rounded-full bg-green-600 px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
               >
                 Pré-commander
               </Link>
               <Link
-                to="/DevPage"
+                to="/OrderPage"
                 className="rounded-full bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
               >
                 Réserver une table

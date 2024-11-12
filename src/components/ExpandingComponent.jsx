@@ -10,21 +10,21 @@ const ExpandingComponent = ({ title, children }) => {
 
   return (
     <div className="bg-black">
-      <button
+      <div
         onClick={toggleOpen}
-        className={`flex justify-between items-center w-full p-10 h-16 bg-green-600 text-white rounded-full transition-all duration-300 ${
+        className={`flex justify-between items-center w-15 px-3.5 py-2.5  bg-green-600 text-white rounded-full transition-all duration-300 ${
           isOpen ? "rounded-b-none p-6" : ""
         }`}
       >
-        <span className="flex text-xl font-bold ml">{title}</span>
+        <span className="flex text-xl font-bold">{title}</span>
         <span
-          className={`m transition-transform duration-300 ${
+          className={`transition-transform duration-300 ${
             isOpen ? "rotate-90" : ""
           }`}
         >
           ➔
         </span>
-      </button>
+      </div>
       <div
         className={`overflow-hidden transition-max-height duration-300 ease-in-out ${
           isOpen ? "max-h-auto" : "max-h-0"

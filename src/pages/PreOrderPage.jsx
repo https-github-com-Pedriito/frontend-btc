@@ -1,194 +1,132 @@
-import { loadStripe } from '@stripe/stripe-js';
-import { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import Footer from '../components/Footer';
-import { FaCalendarCheck } from 'react-icons/fa';
+import { useEffect, useState } from "react";
+import { useCart } from "../components/CartContext";
+import ScheduleSelect from "../components/ScheduleSelect";
+import Basket from "../components/Basket";
+import { Navigate } from "react-router-dom";
 
-const stripePromise = loadStripe('YOUR_PUBLISHABLE_KEY');
-
-const PreOrderPage = () => {
-  const [cart, setCart] = useState([]);
-  const [selectedTime, setSelectedTime] = useState('');
-  const [customerInfo, setCustomerInfo] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
+function PreOrderPage() {
+  const { cart } = useCart();
+  const [formData, setFormData] = useState({
+    name: "",
+    lastName: "",
+    phone: "",
+    email: "",
+    paymentMethod: "online",
+    location: "inside",
   });
-  const [totalPrice, setTotalPrice] = useState(0);
-  const [currentStep, setCurrentStep] = useState(0);
-  const [paymentMethod, setPaymentMethod] = useState(null);
-  const [icsFileUrl, setIcsFileUrl] = useState(null);
 
-  useEffect(() => {
-    const price = cart.reduce((acc, item) => acc + item.price, 0);
-    setTotalPrice(price);
-  }, [cart]);
+  useEffect(() => {}, [cart]);
 
-  const handleAddToCart = (item) => {
-    setCart([...cart, item]);
+  const handleInputChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleRemoveFromCart = (item) => {
-    setCart(cart.filter((cartItem) => cartItem.id !== item.id));
-  };
-
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-
-    const orderData = {
-      customerInfo,
-      cart,
-      selectedTime,
-      totalPrice,
-      orderTime: new Date().toISOString(),
-    };
-
-    // Choix du paiement en ligne via Stripe
-    if (paymentMethod === 'online') {
-      const stripe = await stripePromise;
-
-      // Appel à votre backend pour créer une session de paiement
-      const response = await fetch('/api/create-checkout-session', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          cart,
-          customerInfo,
-          selectedTime,
-          totalPrice,
-        }),
-      });
-
-      const session = await response.json();
-
-      // Rediriger vers la session de paiement Stripe
-      const result = await stripe.redirectToCheckout({
-        sessionId: session.id,
-      });
-
-      if (result.error) {
-        alert(result.error.message);
-      }
-    } else {
-      // Traitement pour le paiement au comptoir
-      alert('Paiement au comptoir sélectionné');
+    if (
+      !formData.name ||
+      !formData.lastName ||
+      !formData.phone ||
+      !formData.email ||
+      !formData.location||
+      !formData.timeSlot
+    ) {
+      alert("Veuillez remplir tous les champs");
+      return;
     }
-  };
-
-  const generateICS = (orderData) => {
-    const { firstName, lastName } = orderData.customerInfo;
-    const icsContent = `
-BEGIN:VCALENDAR
-VERSION:2.0
-BEGIN:VEVENT
-SUMMARY:Commande précommandée
-DESCRIPTION:Merci ${firstName} ${lastName} pour votre commande !\nProduits: ${cart
-      .map((item) => item.name)
-      .join(', ')}\nPrix total: ${totalPrice}€
-DTSTART:${selectedTime}
-DTEND:${selectedTime}
-END:VEVENT
-END:VCALENDAR
-    `;
-    const blob = new Blob([icsContent], { type: 'text/calendar' });
-    const url = URL.createObjectURL(blob);
-    return url;
+    console.log("Commande validée", {
+      ...formData,
+      timeSlot: formData.timeSlot,
+      cart,
+    });
   };
 
   return (
-    <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 bg-black">
-      <div className="sm:mx-auto sm:w-full sm:max-w-lg">
-        <h2 className="mt-10 text-center text-3xl text-white font-bold leading-9 tracking-tight">
-          Précommandez vos produits
-        </h2>
+    <div className="min-h-screen bg-gray-100 text-gray-800 p-4">
+      <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-6">
+        <Basket />
 
-        {/* Formulaire de précommande */}
-        <form onSubmit={handleSubmit} className="mt-4 space-y-6">
-          <div>
-            <input
-              id="firstName"
-              name="firstName"
-              type="text"
-              placeholder="Prénom"
-              value={customerInfo.firstName}
-              onChange={(e) =>
-                setCustomerInfo({ ...customerInfo, firstName: e.target.value })
-              }
-              required
-              className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 placeholder:px-2 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            />
-          </div>
+        <h2 className="text-xl font-semibold mb-4 mt-8">Informations Client</h2>
 
-          <div>
-            <input
-              id="lastName"
-              name="lastName"
-              type="text"
-              value={customerInfo.lastName}
-              placeholder="Nom"
-              onChange={(e) =>
-                setCustomerInfo({ ...customerInfo, lastName: e.target.value })
-              }
-              required
-              className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 placeholder:px-2 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            />
-          </div>
+        <form onSubmit={handleSubmit} className="space-y-4 mx-auto">
+          <ScheduleSelect
+            value={formData.timeSlot}
+            onChange={(value) =>
+              setFormData((prev) => ({ ...prev, timeSlot: value }))
+            }
+          />
 
-          <div>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              placeholder="Email"
-              value={customerInfo.email}
-              onChange={(e) =>
-                setCustomerInfo({ ...customerInfo, email: e.target.value })
-              }
-              required
-              className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 placeholder:px-2 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            />
-          </div>
+          <input
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleInputChange}
+            placeholder="Nom"
+            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-600"
+          />
 
-          {/* Sélection du paiement */}
-          <div className="mb-4">
+          <input
+            type="text"
+            name="lastName"
+            value={formData.lastName}
+            onChange={handleInputChange}
+            placeholder="Prénom"
+            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-600"
+          />
+
+          <input
+            type="tel"
+            name="phone"
+            value={formData.phone}
+            onChange={handleInputChange}
+            placeholder="Téléphone"
+            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-600"
+          />
+
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleInputChange}
+            placeholder="Email"
+            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-600"
+          />
+
+          <div className="flex flex-col items-center gap-4">
+            <select
+              name="paymentMethod"
+              value={formData.paymentMethod}
+              onChange={handleInputChange}
+              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-600"
+            >
+              <option value="online"> Paiment en ligne</option>
+              <option value="counter">Paiement au comptoir</option>
+            </select>
+
+            <select
+              name="Location"
+              value={formData.location}
+              onChange={handleInputChange}
+              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-600"
+
+            >
+              <option value="inside">Manger sur place</option>
+              <option value="outside">À emporter</option>
             
-            <label className="text-white">
-              <input
-                type="radio"
-                name="payment"
-                value="counter"
-                onChange={() => setPaymentMethod('counter')}
-              />{' '}
-              Paiement au comptoir
-            </label>
+            </select>
           </div>
 
           <button
+            disabled={true}
             type="submit"
-            className="flex w-full justify-center rounded-md bg-green-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            className="w-full mt-6 bg-green-700 hover:bg-green-800 text-white py-2 rounded-md font-semibold"
           >
-            Valider ma commande
+            Valider la commande
           </button>
         </form>
-
-        {icsFileUrl && (
-          <a
-            href={icsFileUrl}
-            download="preorder.ics"
-            className="mt-4 flex items-center justify-center bg-white px-4 py-2 rounded shadow hover:bg-gray-100"
-          >
-            <p className="mr-2">Ajouter au calendrier</p>
-            <p>
-              <FaCalendarCheck />
-            </p>
-          </a>
-        )}
       </div>
-      <Footer />
     </div>
   );
-};
+}
 
 export default PreOrderPage;

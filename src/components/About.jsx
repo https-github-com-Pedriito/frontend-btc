@@ -8,7 +8,7 @@ const About = () => {
   return (
     <div className="p-8 bg-black">
       {/* Contenu adaptatif pour mobile */}
-      <div className="flex flex-col md:flex-row justify-center items-center md:space-x-28 mt-10 space-y-8 md:space-y-0">
+      <div className="flex flex-col  md:flex-row justify-center items-center md:space-x-28 mt-10 space-y-8 md:space-y-0">
         {/* Image en haut sur mobile */}
         <div className="md:w-2/5 w-full">
           <img
@@ -33,7 +33,7 @@ const About = () => {
       {/* Bouton centré en dessous */}
       <div className="flex justify-center mt-12 mb-8">
         <button onClick={handleClick} 
-        className=" bg-green-600 text-white rounded-full shadow-neumorphic px-8 py-5  hover: cursor-pointer transition-transform transform active:shadow-neumorphic-inset active:translate-y-2 ">
+        className=" bg-green-600 text-white text-sm rounded-full shadow-neumorphic mt-8 px-3.5 py-2.5 w-auto hover:  transition-transform transform active:shadow-neumorphic-inset active:translate-y-2 ">
           Découvrir le Menu
         </button>
       </div>
