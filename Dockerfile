@@ -1,7 +1,7 @@
 # frontend/Dockerfile
 
 # Utiliser l'image Node 16 pour le build
-FROM node:16 as builder
+FROM node:18 as builder
 
 # Créer et définir le répertoire de travail
 WORKDIR /app

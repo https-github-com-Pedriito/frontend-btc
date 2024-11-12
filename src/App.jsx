@@ -9,8 +9,7 @@ import PreOrderPage from "./pages/PreOrderPage";
 import Completion from "./pages/Completion";
 import Payment from "./pages/Payment";
 import BasketPage from "./pages/BasketPage";
-import Reservationage from "./pages/ReservationPage";
-// Components
+import Reservationpage from "./pages/Reservationpage";
 import Dashboard from "./components/Dashboard";
 import Dev from "./components/Dev";
 import { CartProvider } from "./components/CartContext"; // Import du contexte CartProvider
@@ -48,7 +47,7 @@ function App() {
             <Route path="/completion" element={<Completion stripePromise={stripePromise} />} />
             <Route path="/BasketPage" element={<BasketPage />} />
             <Route path='/Payment' element={<Payment stripePromise={stripePromise} />} />
-            <Route path="/OrderPage" element={<Reservationage />} />
+            <Route path="/OrderPage" element={<Reservationpage />} />
           </Routes>
         </div>
       </Router>
