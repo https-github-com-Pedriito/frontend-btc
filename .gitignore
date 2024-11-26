@@ -4,3 +4,10 @@
 # Ignorer tous les fichiers .env
 .env
 *.env
+
+
+# Ignorer le dossier node_modules
+node_modules/
+
+# Ignorer le dossier .nvm
+.nvm/
