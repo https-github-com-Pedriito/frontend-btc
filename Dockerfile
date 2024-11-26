@@ -1,9 +1,7 @@
-# frontend/Dockerfile
-
-# Utiliser l'image Node 16 pour le build
+# Étape 1 : Utiliser Node 18 pour construire l'application
 FROM node:18 as builder
 
-# Créer et définir le répertoire de travail
+# Définir le répertoire de travail
 WORKDIR /app
 
 # Copier les fichiers package.json et package-lock.json
@@ -18,14 +16,13 @@ COPY . .
 # Construire l'application
 RUN npm run build
 
-# Utiliser Nginx pour servir l'application
-FROM nginx:alpine
+# Étape 2 : Utiliser Apache pour servir l'application
+FROM httpd:alpine
 
-# Copier les fichiers de build dans Nginx
-COPY --from=builder /app/dist /usr/share/nginx/html
+# Copier les fichiers de build dans le répertoire public d'Apache
+COPY --from=builder /app/dist /usr/local/apache2/htdocs/
 
 # Exposer le port 80
 EXPOSE 80
 
-# Commande par défaut de Nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Apache démarre automatiquement en mode foreground par défaut

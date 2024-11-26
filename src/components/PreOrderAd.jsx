@@ -4,8 +4,8 @@ import { Button } from "react-scroll";
 const PreOrderAd = () => {
   return (
     <div className="bg-black">
-      <div className="mx-auto max-w-7xl py-24 sm:px-6 sm:py-32 lg:px-8">
-        <div className="relative isolate overflow-hidden bg-black px-6 pt-16 shadow-2xl sm:rounded-3xl sm:px-16 md:pt-24 lg:flex lg:gap-x-20 lg:px-24 lg:pt-0">
+      <div className="py-24 mx-auto max-w-7xl sm:px-6 sm:py-32 lg:px-8">
+        <div className="relative px-6 pt-16 overflow-hidden bg-black shadow-2xl isolate sm:rounded-3xl sm:px-16 md:pt-24 lg:flex lg:gap-x-20 lg:px-24 lg:pt-0">
           <svg
             viewBox="0 0 1024 1024"
             aria-hidden="true"
@@ -25,7 +25,7 @@ const PreOrderAd = () => {
               </radialGradient>
             </defs>
           </svg>
-          <div className="mx-auto max-w-md text-center lg:mx-0 lg:flex-auto lg:py-32 lg:text-left">
+          <div className="max-w-md mx-auto text-center lg:mx-0 lg:flex-auto lg:py-32 lg:text-left">
             <h2 className="text-3xl font-bold tracking-tight text-green-600 sm:text-4xl">
               Pré-commandez <span className="text-white">&</span>
             </h2>
@@ -37,16 +37,16 @@ const PreOrderAd = () => {
               En deux clics votre pré-commande est prête et votre table
               réservée. Profitez de votre repas sans attendre.
             </p>
-            <div className="mt-10 flex items-center justify-center gap-x-6 lg:justify-start">
-              <Link 
+            <div className="flex items-center justify-center mt-10 gap-x-6 lg:justify-start">
+              <Link
                 to="/preOrder"
-                className="rounded-full bg-green-600 px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                className="rounded-full bg-green-600 px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-md shadow-white hover:bg-gray-100 focus-visible:outline  focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
               >
                 Pré-commander
               </Link>
               <Link
                 to="/OrderPage"
-                className="rounded-full bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                className="rounded-full bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-md shadow-white hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
               >
                 Réserver une table
               </Link>
@@ -58,7 +58,7 @@ const PreOrderAd = () => {
               src={precommande_img}
               width={1824}
               height={1080}
-              className="absolute left-0 top-0 w-[37rem] max-w-none rounded-md bg-white/5 ring-1 ring-white/10"
+              className="object-cover w-[37rem] h-auto max-w-none rounded-lg shadow-sm bg-white/5 ring-1 ring-white/10"
             />
           </div>
         </div>
