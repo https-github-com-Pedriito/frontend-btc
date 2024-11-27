@@ -39,13 +39,13 @@ const PreOrderAd = () => {
             </p>
             <div className="flex items-center justify-center mt-10 gap-x-6 lg:justify-start">
               <Link
-                to="/preOrder"
+                // to="/preOrder"
                 className="rounded-full bg-green-600 px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-md shadow-white hover:bg-gray-100 focus-visible:outline  focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
               >
                 Pré-commander
               </Link>
               <Link
-                to="/OrderPage"
+                // to="/OrderPage"
                 className="rounded-full bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 shadow-md shadow-white hover:bg-gray-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
               >
                 Réserver une table

@@ -23,11 +23,15 @@ const BasketPage = () => {
         <Basket total={total} /> {/* Passez total à Basket */}
       </div>
       <div className=" flex flex-col gap-4 sm:[w-1/2 p-4]">
-        <Link to={"/preOrder"}>
+        <Link 
+        // to={"/preOrder"}
+        >
           <Button disabled={true}> Pré-commander</Button>
         </Link>
-        <Link to={"/OrderPage"}>
-          <Button disabled={true} className="bg-white  text-black">
+        <Link 
+        // to="/orderPage"
+        >
+          <Button disabled={true} className="text-black bg-white">
             {" "}
             Réserver une table
           </Button>
