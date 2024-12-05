@@ -224,12 +224,6 @@ const ProductPopup = ({ product, onClose, addToCart }) => {
                     selectedPerles,
                     selectedThe,
                   });
-                  console.log("Produit ajouté au panier: ", {
-                    ...productWithoutExcludedProps,
-                    selectedParfums,
-                    selectedPerles,
-                    selectedThe,
-                  });
                   onClose();
                 }}
                 className="px-6 py-3 mt-auto text-lg font-semibold text-white bg-green-500 rounded-lg"
