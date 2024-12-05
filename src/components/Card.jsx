@@ -15,10 +15,11 @@ const Card = ({ imageSrc, title, price, description, onClick }) => {
   return (
     <div
       onClick={onClick}
-      className="overflow-hidden bg-white rounded-lg shadow-lg cursor-pointer"
+      className="bg-white rounded-lg shadow-lg cursor-pointer 
+             overflow-hidden"
     >
       {/* Carte sans image au début avec un placeholder */}
-      <div className="relative w-full h-48 bg-gray-200">
+      <div className="relative w-full h-32 bg-gray-200">
         {/* Utilisation d'un placeholder ou d'une couleur de fond par défaut */}
         {!isImageLoaded && !isImageError && (
           <div className="absolute inset-0 flex items-center justify-center text-gray-500">
@@ -29,7 +30,9 @@ const Card = ({ imageSrc, title, price, description, onClick }) => {
         <img
           src={imageSrc}
           alt={title}
-          className={`object-cover w-full h-full transition-opacity duration-500 ${isImageLoaded ? "opacity-100" : "opacity-0"}`}
+          className={`object-cover w-full h-full transition-opacity duration-500 ${
+            isImageLoaded ? "opacity-100" : "opacity-0"
+          }`}
           onLoad={handleImageLoad}
           onError={handleImageError}
         />

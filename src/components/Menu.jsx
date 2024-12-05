@@ -104,6 +104,7 @@ const Menu = () => {
     const fetchMenuItems = async () => {
       try {
         const products = await fetchProducts();
+        console.log(products);
         const subCategories = await fetchSubCategories();
         const categories = await fetchCategories();
 
@@ -127,6 +128,9 @@ const Menu = () => {
             description: product.Description,
             options: product.options || [],
             allergenes: product.allergenes || [],
+            the: product.the || [],
+            perle: product.perle || [],
+            parfum: product.parfum || [],
             quantity: 1,
             id: product.id,
           };
