@@ -171,7 +171,7 @@ const Menu = () => {
           </div>
         )}
 
-        <div className="flex gap-20 p-4 px-8 mb-12 space-x-2 overflow-x-auto bg-gray-200 rounded-full shadow-lg bg-opacity-40 whitespace-nowrap">
+        <div className="sm:px-8 sm:justify-between flex p-3  mb-12 space-x-4 overflow-x-auto bg-gray-200 rounded-full shadow-lg bg-opacity-40 whitespace-nowrap">
           {categories.map((category) => (
             <button
               key={category.id}
@@ -198,7 +198,7 @@ const Menu = () => {
                   {subCategory}
                 </h2>
               )}
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+              <div className="grid grid-cols-2 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3">
                 {groupedItems[subCategory].map((item) => (
                   <Card
                     key={item.id}
